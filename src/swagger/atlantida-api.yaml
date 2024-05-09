@@ -1,0 +1,1225 @@
+openapi: 3.0.3
+info:
+  title: Atlântida API
+  description: API para o gerenciamento de mergulhos - Plataforma Atlântida.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+
+components:
+ securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+ security:
+    - bearerAuth: []
+
+tags:
+  - name: addresses
+    description: Endereço dos usuários
+  - name: users
+    description: Usuários da plataforma
+  - name: certificates
+    description: Certificados dos usuários
+  - name: dive logs
+    description: Megulhos do usuário
+  - name: dive statistics
+    description: Estatísticas dos mergulhos do usuário
+  - name: diving spots
+    description: Pontos de mergulho
+  - name: comments
+    description: Comentários sobre os pontos de mergulho
+
+paths:
+  /api/addresses:
+    post:
+      summary: Criar novo endereço
+      description: Crie um novo endereço para o usuário autenticado.
+      tags:
+        - addresses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/Address'
+      responses:
+        '201':
+          description: Endereço criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Address'
+
+  /api/addresses/{id}:
+    get:
+      summary: Obter endereço por ID
+      description: Obtém os detalhes de um endereço específico.
+      tags:
+        - addresses
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: O ID do endereço
+      responses:
+        '200':
+          description: Detalhes do endereço
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Address'
+    put:
+      summary: Atualizar endereço
+      description: Atualiza os detalhes de um endereço.
+      tags:
+        - addresses
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: O ID do endereço
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/Address'
+      responses:
+        '200':
+          description: Endereço atualizado com sucesso
+    delete:
+      summary: Excluir endereço
+      description: Exclui um endereço.
+      tags:
+        - addresses
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: O ID do endereço
+      responses:
+        '204':
+          description: Endereço excluído com sucesso
+
+  /api/users:
+    get:
+      summary: Listar todos os usuários
+      description: Lista todos os usuários do sistema.
+      tags:
+        - users
+      responses:
+        '200':
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/definitions/User'
+    post:
+      summary: Criar novo usuário
+      description: Crie um novo usuário no sistema.
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/User'
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/User'
+
+  /api/users/{id}:
+    get:
+      summary: Obter usuário por ID
+      description: Obtém os detalhes de um usuário específico.
+      security:
+        - bearerAuth: []
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: O ID do usuário
+      responses:
+        '200':
+          description: Detalhes do usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/User'
+    put:
+      summary: Atualizar usuário
+      description: Atualiza os detalhes de um usuário.
+      security:
+        - bearerAuth: []
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: O ID do usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/UserUpdate'
+      responses:
+        '200':
+          description: Usuário atualizado com sucesso
+    delete:
+      summary: Deletar usuário (requer autenticação de administrador)
+      description: Exclui um usuário do sistema. Requer permissão de administrador.
+      security:
+        - bearerAuth: []
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: O ID do usuário
+      responses:
+        '204':
+          description: Usuário excluído com sucesso
+
+  /api/users/login:
+    post:
+      summary: Efetuar login
+      description: Realiza o login de um usuário existente.
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: O email do usuário.
+                password:
+                  type: string
+                  description: A senha do usuário.
+      responses:
+        '200':
+          description: Dados de login com token de autenticação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Token de autenticação para acesso as demais rotas protegidas.
+
+  /api/users/findUserByToken:
+    post:
+      summary: Buscar usuário pelo token
+      description: Obtém os detalhes do usuário autenticado através do token.
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Detalhes do usuário autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/User'
+
+  /api/users/recoverPassword:
+    post:
+      summary: Recuperar senha
+      description: Envia um email para o usuário com instruções para recuperação de senha.
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: O email do usuário para recuperação de senha.
+      responses:
+        '200':
+          description: Email de recuperação enviado com sucesso
+
+  /api/users/updatePassword:
+    put:
+      summary: Atualizar senha
+      description: Atualiza a senha do usuário autenticado.
+      tags:
+        - users
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  description: Senha atual do usuário.
+                newPassword:
+                  type: string
+                  description: Nova senha do usuário.
+      responses:
+        '200':
+          description: Senha atualizada com sucesso
+
+  /certificates/{id}:
+    get:
+      summary: Busca certificado por id
+      tags:
+        - certificates
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Certificado encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+    put:
+      summary: Atualizar certificado
+      tags:
+        - certificates
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Certificate'
+      responses:
+        '200':
+          description: Certificado atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+    delete:
+      summary: Deletar certificado
+      tags:
+        - certificates
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Certificado deletado com sucesso
+
+  /certificates:
+    get:
+      summary: Busca certificado por id do usuário
+      tags:
+        - certificates
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de certificados do usuário
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Certificate'
+    post:
+      summary: Cadastrar certificados
+      tags:
+        - certificates
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Certificate'
+      responses:
+        '201':
+          description: Certificado cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+
+  /certificates/expired:
+    post:
+      summary: Busca os certificados expirados
+      tags:
+        - certificates
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de certificados expirados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Certificate'
+
+  /api/diveLogs:
+    post:
+      summary: Cadastrar mergulhos
+      tags:
+        - dive logs
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/DiveLog'
+      responses:
+        '201':
+          description: Mergulho cadastrado com sucesso
+    get:
+      summary: Busca mergulho por token do usuário
+      tags:
+        - dive logs
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Mergulhos encontrados
+
+  /api/diveLogs/dateRange:
+    get:
+      summary: Busca mergulhos por intervalo de data
+      tags:
+        - dive logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Mergulhos encontrados
+
+  /api/diveLogs/title/{title}:
+    get:
+      summary: Busca mergulhos pelo título do registro de mergulho
+      tags:
+        - dive logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - title: title
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Mergulhos encontrados
+
+  /api/diveLogs/rating/{rating}:
+    get:
+      summary: Busca mergulhos por rating
+      tags:
+        - dive logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: rating
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Mergulhos encontrados
+
+  /api/diveLogs/location/{location}:
+    get:
+      summary: Busca mergulhos por localização
+      tags:
+        - dive logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: location
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Mergulhos encontrados
+
+  /api/diveLogs/{id}:
+    get:
+      summary: Busca mergulho por id
+      tags:
+        - dive logs
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Mergulho encontrado
+    put:
+      summary: Atualizar mergulho
+      tags:
+        - dive logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/DiveLog'
+      responses:
+        '200':
+          description: Mergulho atualizado com sucesso
+    delete:
+      summary: Deletar mergulho
+      tags:
+        - dive logs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Mergulho deletado com sucesso
+
+  /api/diveStatistics:
+    get:
+      summary: Buscar estatísticas do usuário por UserId
+      tags:
+        - dive statistics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Estatísticas do usuário encontradas
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/DiveStatistics'
+
+  /api/divingSpots:
+    get:
+      summary: Buscar todos os pontos de mergulho
+      tags:
+        - diving spots
+      responses:
+        '200':
+          description: Lista de pontos de mergulho
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/definitions/DivingSpot'
+    post:
+      summary: Criar ponto de mergulho
+      tags:
+        - diving spots
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/DivingSpotCreate'
+      responses:
+        '201':
+          description: Ponto de mergulho criado com sucesso
+
+  /api/divingSpots/{id}:
+    get:
+      summary: Buscar ponto por id
+      tags:
+        - diving spots
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ponto de mergulho encontrado
+
+  /api/divingSpotsByLocation:
+    get:
+      summary: Filtrar por localização
+      tags:
+        - diving spots
+      parameters:
+        - name: latitude
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+        - name: longitude
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+      responses:
+        '200':
+          description: Lista de pontos de mergulho filtrados por localização
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/definitions/DivingSpot'
+
+  /api/divingSpotsByName:
+    get:
+      summary: Filtrar por nome
+      tags:
+        - diving spots
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de pontos de mergulho filtrados por nome
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/definitions/DivingSpot'
+
+  /api/divingSpotsByRating:
+    get:
+      summary: Filtra locais de mergulho por classificação
+      description: Retorna todos os locais de mergulho que têm uma classificação igual ou superior à fornecida.
+      tags:
+        - diving spots
+      parameters:
+        - name: rating
+          in: query
+          description: A classificação mínima dos locais de mergulho a serem retornados. Deve ser um número de 0 a 5.
+          required: true
+          type: number
+          format: float
+      responses:
+        '200':
+          description: Lista de locais de mergulho filtrados por classificação
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DivingSpot'
+        '400':
+          description: Parâmetro de consulta inválido
+        '500':
+          description: Erro interno do servidor
+  
+  /api/divingSpotsByDifficulty:
+    get:
+      summary: Filtra locais de mergulho por dificuldade
+      description: Retorna todos os locais de mergulho que têm uma dificuldade igual ou inferior à fornecida.
+      tags:
+        - diving spots
+      parameters:
+        - name: difficulty
+          in: query
+          description: A dificuldade máxima dos locais de mergulho a serem retornados. Deve ser um número de 0 a 5.
+          required: true
+          type: number
+          format: float
+      responses:
+        '200':
+          description: Lista de locais de mergulho filtrados por dificuldade
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DivingSpot'
+        '400':
+          description: Parâmetro de consulta inválido
+        '500':
+          description: Erro interno do servidor
+
+  /api/comments:
+    post:
+      summary: Criar comentário
+      tags:
+        - comments
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/Comment'
+      responses:
+        '201':
+          description: Comentário criado com sucesso
+
+  /api/{divingSpotId}/comments:
+    get:
+      summary: Filtrar por id do ponto de mergulho
+      tags:
+        - comments
+      parameters:
+        - name: divingSpotId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de comentários do ponto de mergulho
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/definitions/Comment'
+
+  /api/comments/{id}:
+    get:
+      summary: Filtrar por id
+      tags:
+        - comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Comentário encontrado
+    put:
+      summary: Atualizar comentário
+      tags:
+        - comments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/Comment'
+      responses:
+        '200':
+          description: Comentário atualizado com sucesso
+    delete:
+      summary: Deletar comentário
+      tags:
+        - comments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Comentário deletado com sucesso
+
+definitions:
+  Address:
+    type: object
+    required:
+      - country
+      - state
+      - city
+      - neighborhood
+      - street
+      - number
+      - postalCode
+    properties:
+      country:
+        type: string
+        description: O país do usuário. (e.g., Brasil)
+      state:
+        type: string
+        description: O estado do usuário dentro do país. (e.g., SP)
+      city:
+        type: string
+        description: A cidade do usuário.
+      neighborhood:
+        type: string
+        description: O bairro do usuário. (opcional)
+      street:
+        type: string
+        description: O endereço da rua do usuário.
+      number:
+        type: integer
+        description: O número do endereço do usuário.
+      complement:
+        type: string
+        description: Informações adicionais de endereço (e.g., número do apartamento, andar). (opcional)
+      postalCode:
+        type: string
+        description: O código postal do usuário.
+  User:
+    type: object
+    required:
+    - firstName
+    - lastName
+    - email
+    - password
+    - birthDate
+    - addressId
+    properties:
+      firstName:
+        type: string
+        description: O primeiro nome do usuário.
+      lastName:
+        type: string
+        description: O sobrenome do usuário.
+      email:
+        type: string
+        description: O email do usuário.
+        format: email
+      password:
+        type: string
+        description: A senha do usuário (armazenada com hash criptográfico).
+      birthDate:
+        type: string
+        format: date
+        description: A data de nascimento do usuário.
+      addressId:
+        type: string
+        description: O ID do endereço do usuário.
+      profilePicture:
+        type: object
+        properties:
+          data:
+            type: string
+            format: byte
+            description: Dados da imagem do perfil em formato binário.
+          contentType:
+            type: string
+            description: Tipo de conteúdo da imagem do perfil.
+      createdDate:
+        type: string
+        format: date-time
+        description: A data de criação do usuário.
+  UserUpdate:
+    type: object
+    properties:
+      firstName:
+        type: string
+        description: O primeiro nome do usuário (opcional).
+      lastName:
+        type: string
+        description: O sobrenome do usuário (opcional).
+      birthDate:
+        type: string
+        format: date
+        description: A data de nascimento do usuário (opcional).
+      profilePicture:
+        type: object
+        properties:
+          data:
+            type: string
+            format: byte
+            description: Dados da imagem do perfil em formato binário.
+          contentType:
+            type: string
+            description: Tipo de conteúdo da imagem do perfil.
+  Certificate:
+    type: object
+    required:
+      - certificateName
+      - accreditor
+      - certificationNumber
+      - userId
+    properties:
+      certificateName:
+        type: string
+      accreditor:
+        type: string
+      certificationNumber:
+        type: string
+      certificationLevel:
+        type: string
+      issuanceDate:
+        type: string
+        format: date
+      expirationDate:
+        type: string
+        format: date
+      certificateImage:
+        type: object
+        properties:
+          data:
+            type: string
+            format: byte
+          contentType:
+            type: string
+      userId:
+        type: string
+  DiveLog:
+    type: object
+    required:
+    - title
+    - location
+    - date
+    - type
+    - depth
+    - bottomTimeInMinutes
+    - userId
+    properties:
+      title:
+        type: string
+        description: Título do mergulho
+      location:
+        type: string
+        description: Localização do mergulho
+      date:
+        type: string
+        format: date-time
+        description: Data e hora do mergulho
+      type:
+        type: string
+        description: Tipo de mergulho (por exemplo, Scuba Diving)
+      depth:
+        type: number
+        format: float
+        description: Profundidade máxima do mergulho em metros
+      bottomTimeInMinutes:
+        type: integer
+        description: Tempo de permanência na água em minutos
+      waterType:
+        type: string
+        description: Tipo de água (Salgada ou Doce)
+      waterBody:
+        type: string
+        description: Corpo de água (por exemplo, Oceano, Lago, Pedreira, Rio ou Outro)
+      weatherConditions:
+        type: string
+        description: Condições meteorológicas durante o mergulho
+      temperature:
+        type: object
+        description: Temperaturas em diferentes partes do corpo e da água
+        properties:
+          air:
+            type: number
+            format: float
+            description: Temperatura do ar em graus Celsius
+          surface:
+            type: number
+            format: float
+            description: Temperatura da superfície da água em graus Celsius
+          bottom:
+            type: number
+            format: float
+            description: Temperatura do fundo da água em graus Celsius
+      visibility:
+        type: string
+        description: Visibilidade da água
+      waves:
+        type: string
+        description: Condições das ondas
+      current:
+        type: string
+        description: Condições da corrente
+      surge:
+        type: string
+        description: Condições de surge
+      suit:
+        type: string
+        description: Tipo de traje usado
+      weight:
+        type: string
+        description: Peso do traje e equipamento
+      additionalEquipment:
+        type: array
+        items:
+          type: string
+        description: Equipamentos adicionais usados
+      cylinder:
+        type: object
+        description: Informações sobre o cilindro de ar usado
+        properties:
+          type:
+            type: string
+            description: Tipo do cilindro (por exemplo, Aluminum)
+          size:
+            type: number
+            format: float
+            description: Tamanho do cilindro em litros
+          gasMixture:
+            type: string
+            description: Mistura de gases no cilindro (por exemplo, Air)
+          initialPressure:
+            type: number
+            format: float
+            description: Pressão inicial do cilindro em bar
+          finalPressure:
+            type: number
+            format: float
+            description: Pressão final do cilindro em bar
+          usedAmount:
+            type: number
+            format: float
+            description: Quantidade de gás usado em litros
+      rating:
+        type: string
+        description: Avaliação do mergulho
+      notes:
+        type: string
+        description: Observações sobre o mergulho
+      buddy:
+        type: string
+        description: Nome do companheiro de mergulho
+      photos:
+        type: array
+        items:
+          type: object
+          properties:
+            data:
+              type: string
+              format: byte
+              description: Dados da foto codificados em base64
+            contentType:
+              type: string
+              description: Tipo de conteúdo da foto (por exemplo, image/jpeg)
+      userId:
+        type: string
+        description: Identificador do usuário que registrou o mergulho
+  DiveStatistics:
+    type: object
+    properties:
+      totalDives:
+        type: integer
+        description: Número total de mergulhos realizados pelo usuário
+      totalDepth:
+        type: number
+        format: float
+        description: Profundidade total de todos os mergulhos do usuário em metros
+      averageDepth:
+        type: number
+        format: float
+        description: Profundidade média dos mergulhos do usuário em metros
+      totalBottomTime:
+        type: integer
+        description: Tempo total de permanência na água em minutos
+      mostCommonWaterBody:
+        type: string
+        description: Corpo de água mais comum nos mergulhos do usuário
+      mostCommonWeatherCondition:
+        type: string
+        description: Condição meteorológica mais comum nos mergulhos do usuário
+      userId:
+        type: string
+        description: Identificador do usuário que registrou as estatísticas
+  DivingSpot:
+    type: object
+    required:
+    - name
+    - location
+    properties:
+      name:
+        type: string
+        description: Nome do ponto de mergulho
+      description:
+        type: string
+        description: Descrição do ponto de mergulho
+      image:
+        type: object
+        properties:
+          data:
+            type: string
+            format: byte
+            description: Dados da imagem codificados em base64
+          contentType:
+            type: string
+            description: Tipo de conteúdo da imagem (por exemplo, image/jpeg)
+      location:
+        type: object
+        required:
+          - type
+          - coordinates
+        properties:
+          type:
+            type: string
+            enum: ['Point']
+            description: Tipo de localização (apenas 'Point' é suportado)
+          coordinates:
+            type: array
+            items:
+              type: number
+              format: float
+            description: Coordenadas do ponto de mergulho (latitude, longitude)
+      averageRating:
+        type: number
+        description: Classificação média do ponto de mergulho
+        default: 0
+      averageDifficulty:
+        type: number
+        description: Dificuldade média do ponto de mergulho
+        default: 0
+      numberOfComments:
+        type: integer
+        description: Número de comentários sobre o ponto de mergulho
+        default: 0
+  DivingSpotCreate:
+    type: object
+    required:
+    - name
+    - location
+    properties:
+      name:
+        type: string
+        description: Nome do ponto de mergulho
+      description:
+        type: string
+        description: Descrição do ponto de mergulho
+      image:
+        type: object
+        properties:
+          data:
+            type: string
+            format: byte
+            description: Dados da imagem codificados em base64
+          contentType:
+            type: string
+            description: Tipo de conteúdo da imagem (por exemplo, image/jpeg)
+      location:
+        type: object
+        required:
+          - type
+          - coordinates
+        properties:
+          type:
+            type: string
+            enum: ['Point']
+            description: Tipo de localização (apenas 'Point' é suportado)
+          coordinates:
+            type: array
+            items:
+              type: number
+              format: float
+            description: Coordenadas do ponto de mergulho (latitude, longitude)
+  Comment:
+    type: object
+    required:
+    - rating
+    - userId
+    - divingSpotId
+    properties:
+      rating:
+        type: integer
+        description: Classificação do comentário
+      difficulty:
+        type: integer
+        description: Dificuldade do comentário
+      comment:
+        type: string
+        description: Texto do comentário
+      photos:
+        type: array
+        items:
+          type: object
+          properties:
+            data:
+              type: string
+              format: byte
+              description: Dados da foto codificados em base64
+            contentType:
+              type: string
+              description: Tipo de conteúdo da foto (por exemplo, image/jpeg)
+      userId:
+        type: string
+        description: Identificador do usuário que fez o comentário
+      divingSpotId:
+        type: string
+        description: Identificador do ponto de mergulho relacionado ao comentário

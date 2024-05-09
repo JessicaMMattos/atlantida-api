@@ -1,0 +1,42 @@
+# Node.js
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Bower dependency directory (https://bower.io/)
+bower_components/
+
+# Yarn
+.yarn
+.yarnrc
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# Git
+.git
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile
+.dockerignore
+.docker
+.docker-compose.yml
+.docker-compose.override.yml
+.docker-compose.*.yml
+
+# Tests
+__tests__
+test
+tests
