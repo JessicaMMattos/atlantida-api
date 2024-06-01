@@ -1,9 +1,12 @@
 import DiveLogsRepository from '../repositories/diveLogsRepository.js';
+import logger from '../utils/logger.js';
 
 class DiveStatisticsService {
   static async getDiveStatisticsByUserId(userId, startDate, endDate) {
+    logger.info('DiveStatisticsService.getDiveStatisticsByUserId');
+
     try {
-      const diveLogs = await DiveLogsRepository.findByUserIdAndDateRange(userId, startDate, endDate);
+      const diveLogs = await DiveLogsRepository.findByDateRange(startDate, endDate, userId);
 
       if (!diveLogs || diveLogs.length === 0) {
         throw new Error('Nenhum mergulho encontrado para o período selecionado');
@@ -33,6 +36,8 @@ class DiveStatisticsService {
   }
 
   static countConditions(diveLogs, conditionType) {
+    logger.info('DiveStatisticsService.countConditions');
+
     const counts = new Map();
     diveLogs.forEach(log => {
       const condition = log[conditionType];
@@ -44,6 +49,8 @@ class DiveStatisticsService {
   }
 
   static findMostCommonCondition(counts) {
+    logger.info('DiveStatisticsService.findMostCommonCondition');
+
     if (counts.size === 0) return null;
     return Array.from(counts.entries()).reduce((a, b) => (counts.get(a[0]) > counts.get(b[0]) ? a : b))[0];
   }
