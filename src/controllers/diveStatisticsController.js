@@ -4,8 +4,9 @@ import TokenService from '../services/tokenService.js';
 class DiveStatisticsController {
   static findDiveStatisticsByToken = async (req, res) => {
     try {
+      const { startDate, endDate } = req.query;
       const id = await TokenService.returnUserIdToToken(req.headers.authorization);
-      const diveStatistics = await DiveStatisticsService.findDiveStatisticsByUserId(id);
+      const diveStatistics = await DiveStatisticsService.getDiveStatisticsByUserId(id, startDate, endDate);
 
       res.status(200).json(diveStatistics);
     } catch (error) {
