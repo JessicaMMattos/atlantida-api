@@ -9,7 +9,7 @@ diveLogsRoutes
   .get('/api/diveLogs', bearer, DiveLogsController.findDiveLogsByToken)
   .get('/api/diveLogs/dateRange', bearer, DiveLogsController.findDiveLogsByDateRange)
   .get('/api/diveLogs/title/:title', bearer, DiveLogsController.findDiveLogsByTitle)
-  .get('/api/diveLogs/rating/:rating', bearer, DiveLogsController.findDiveLogsByRating)
+  .get('/api/diveLogs/date/:date', bearer, DiveLogsController.findDiveLogsByDate)
   .get('/api/diveLogs/location/:location', bearer, DiveLogsController.findDiveLogsByLocation)
   .post('/api/diveLogs', bearer, DiveLogsController.createDiveLog)
   .put('/api/diveLogs/:id', bearer, DiveLogsController.updateDiveLog)

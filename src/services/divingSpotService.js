@@ -1,4 +1,5 @@
 import DivingSpotRepository from '../repositories/divingSpotRepository.js';
+import DiveLogsRepository from '../repositories/diveLogsRepository.js';
 import CommentRepository from '../repositories/commentRepository.js';
 
 class DivingSpotService {
@@ -43,14 +44,14 @@ class DivingSpotService {
   }
 
   static async updateAverageDifficulty(divingSpotId) {
-    const comments = await CommentRepository.findByDivingSpotId(divingSpotId);
+    const diveLogs = await DiveLogsRepository.findByDivingSpotId({ divingSpotId });
+    const validDiveLogs = diveLogs.filter(diveLog => diveLog.difficulty !== undefined);
 
-    const validComments = comments.filter(comment => comment.difficulty !== undefined);
-    const totalDifficulty = validComments.reduce((sum, comment) => sum + comment.difficulty, 0);
-    const averageDifficulty = validComments.length > 0 ? parseFloat((totalDifficulty / validComments.length).toFixed(1)) : 0;
-   
+    const totalDifficulty = validDiveLogs.reduce((sum, diveLog) => sum + diveLog.difficulty, 0);
+    const averageDifficulty = validDiveLogs.length > 0 ? parseFloat((totalDifficulty / validDiveLogs.length).toFixed(1)) : 0;
+
     return await DivingSpotRepository.updateById(divingSpotId, { averageDifficulty });
-  }   
+  }
 }
 
 export default DivingSpotService;

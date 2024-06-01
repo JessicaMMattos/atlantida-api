@@ -9,6 +9,10 @@ class DiveLogsRepository {
     return await DiveLog.find({ userId });
  }
 
+ static async findByDivingSpotId(divingSpotId) {
+   return await DiveLog.find({ divingSpotId });
+}
+
  static async findByDateRange(startDate, endDate, userId) {
    return await DiveLog.find({
      date: { $gte: startDate, $lte: endDate },
@@ -24,9 +28,9 @@ static async findByTitle(title, userId) {
    return await DiveLog.find(query).sort({ name: 1 });
 }
 
-static async findByRating(rating, userId) {
+static async findByDate(date, userId) {
    return await DiveLog.find({
-     rating: rating,
+      date: date,
      userId: userId
    });
 }

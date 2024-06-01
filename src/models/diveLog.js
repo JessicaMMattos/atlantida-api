@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const diveLogSchema = new Schema({
   title: { type: String, required: true },
-  location: { type: String, required: true },
+  divingSpotId: { type: Schema.Types.ObjectId, ref: 'divingSpots', required: true },
   date: { type: Date, required: true },
   type: { type: String, required: true },
   depth: { type: Number, min: 0.0, required: true },
@@ -32,9 +32,9 @@ const diveLogSchema = new Schema({
     finalPressure: { type: Number },
     usedAmount: { type: Number }
   },
-  rating: { type: String },
+  rating: { type: Number, min: 0, max: 5 },
+  difficulty: { type: Number, min: 1, max: 5 },
   notes: { type: String },
-  buddy: { type: String },
   photos: [{
     data: Buffer,
     contentType: String

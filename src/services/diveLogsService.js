@@ -18,8 +18,8 @@ class DiveLogsService {
     return await DiveLogsRepository.findByTitle(title, userId);
   }
 
-  static async findDiveLogsByRating(rating, userId) {
-    return await DiveLogsRepository.findByRating(rating, userId);
+  static async findDiveLogsByDate(Date, userId) {
+    return await DiveLogsRepository.findByDate(Date, userId);
   }
 
   static async findDiveLogsByLocation(location, userId) {
