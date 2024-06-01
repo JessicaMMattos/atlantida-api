@@ -35,13 +35,12 @@ static async findByDate(date, userId) {
    });
 }
 
-static async findByLocation(location, userId) {
-   const query = {
-      location: { $regex: location, $options: 'i' },
-      userId: userId
-   };
-   return await DiveLog.find(query);
-}
+static async findByDivingSpotIdsAndUserId(divingSpotIds, userId) {
+   return await DiveLog.find({
+     divingSpotId: { $in: divingSpotIds },
+     userId: userId
+   });
+ }
 
  static async create(data) {
     const diveLog = new DiveLog(data);

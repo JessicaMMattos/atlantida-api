@@ -61,12 +61,12 @@ static async findDiveLogsByDate(req, res) {
   }
 }
 
-static async findDiveLogsByLocation(req, res) {
+static async findDiveLogsByLocationName(req, res) {
   try {
-    const { location } = req.params;
+    const { locationName } = req.params;
     const userId = await TokenService.returnUserIdToToken(req.headers.authorization);
 
-    const diveLogs = await DiveLogsService.findDiveLogsByLocation(location, userId);
+    const diveLogs = await DiveLogsService.findDiveLogsByLocationName(locationName, userId);
     return res.status(200).json(diveLogs);
   } catch (error) {
     return res.status(500).json({ message: error.message });
