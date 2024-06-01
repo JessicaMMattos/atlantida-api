@@ -557,35 +557,35 @@ paths:
         '204':
           description: Mergulho deletado com sucesso
 
-/api/diveStatistics:
-  get:
-    summary: Buscar estatísticas de mergulho por token do usuário
-    tags:
-      - dive statistics
-    security:
-      - bearerAuth: []
-    parameters:
-      - name: startDate
-        in: query
-        required: false
-        schema:
-          type: string
-          format: date
-        description: Data de início do resgistro de mergulhos para filtrar as estatísticas
-      - name: endDate
-        in: query
-        required: false
-        schema:
-          type: string
-          format: date
-        description: Data de fim do resgistro de mergulhos para filtrar as estatísticas
-    responses:
-      '200':
-        description: Estatísticas de mergulho encontradas
-        content:
-          application/json:
-            schema:
-              $ref: '#/definitions/DiveStatistics'
+  /api/diveStatistics:
+    get:
+      summary: Buscar estatísticas de mergulho por token do usuário
+      tags:
+        - dive statistics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Data de início do resgistro de mergulhos para filtrar as estatísticas
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Data de fim do resgistro de mergulhos para filtrar as estatísticas
+      responses:
+        '200':
+          description: Estatísticas de mergulho encontradas
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/DiveStatistics'
 
   /api/divingSpots:
     get:
