@@ -1,6 +1,6 @@
 {
   "name": "atlantida-api",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "description": "API REST para Gerenciamento de Mergulhos.",
   "main": "server.js",
   "type": "module",
