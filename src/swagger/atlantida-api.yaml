@@ -108,20 +108,6 @@ paths:
           description: Endereço excluído com sucesso
 
   /api/users:
-    get:
-      summary: Listar todos os usuários
-      description: Lista todos os usuários do sistema.
-      tags:
-        - users
-      responses:
-        '200':
-          description: Lista de usuários
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/definitions/User'
     post:
       summary: Criar novo usuário
       description: Crie um novo usuário no sistema.
@@ -140,41 +126,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/User'
-
-  /api/users/{id}:
-    get:
-      summary: Obter usuário por ID
-      description: Obtém os detalhes de um usuário específico.
-      security:
-        - bearerAuth: []
-      tags:
-        - users
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: O ID do usuário
-      responses:
-        '200':
-          description: Detalhes do usuário
-          content:
-            application/json:
-              schema:
-                $ref: '#/definitions/User'
     put:
-      summary: Atualizar usuário
+      summary: Atualizar usuário pelo token
       description: Atualiza os detalhes de um usuário.
       security:
         - bearerAuth: []
       tags:
         - users
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: O ID do usuário
       requestBody:
         required: true
         content:
@@ -185,21 +143,27 @@ paths:
         '200':
           description: Usuário atualizado com sucesso
     delete:
-      summary: Deletar usuário (requer autenticação de administrador)
-      description: Exclui um usuário do sistema. Requer permissão de administrador.
+      summary: Deletar usuário pelo token
+      description: Exclui um usuário do sistema.
       security:
         - bearerAuth: []
       tags:
         - users
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: O ID do usuário
       responses:
         '204':
           description: Usuário excluído com sucesso
+
+  /api/validateToken:
+    get:
+      summary: Validar token do usuário
+      description: Verifica se o token do usuário é válido
+      security:
+        - bearerAuth: []
+      tags:
+        - users
+      responses:
+        '200':
+          description: Token valido
 
   /api/users/login:
     post:
@@ -310,7 +274,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Certificate'
+                $ref: '#/definitions/Certificate'
     put:
       summary: Atualizar certificado
       tags:
@@ -328,14 +292,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Certificate'
+              $ref: '#/definitions/Certificate'
       responses:
         '200':
           description: Certificado atualizado com sucesso
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Certificate'
+                $ref: '#/definitions/Certificate'
     delete:
       summary: Deletar certificado
       tags:
@@ -354,7 +318,7 @@ paths:
 
   /api/certificates:
     get:
-      summary: Busca certificado por id do usuário
+      summary: Busca certificado por token do usuário
       tags:
         - certificates
       security:
@@ -367,7 +331,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Certificate'
+                  $ref: '#/definitions/Certificate'
     post:
       summary: Cadastrar certificados
       tags:
@@ -379,14 +343,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Certificate'
+              $ref: '#/definitions/Certificate'
       responses:
         '201':
           description: Certificado cadastrado com sucesso
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Certificate'
+                $ref: '#/definitions/Certificate'
 
   /api/certificates/expired:
     post:
@@ -403,7 +367,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Certificate'
+                  $ref: '#/definitions/Certificate'
 
   /api/diveLogs:
     post:
@@ -432,28 +396,32 @@ paths:
           description: Mergulhos encontrados
 
   /api/diveLogs/dateRange:
-    get:
+    post:
       summary: Busca mergulhos por intervalo de data
       tags:
         - dive logs
       security:
         - bearerAuth: []
-      parameters:
-        - name: startDate
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: endDate
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - startDate
+                - endDate
+              properties:
+                startDate: 
+                  type: string
+                  format: date
+                endDate: 
+                  type: string
+                  format: date
       responses:
         '200':
           description: Mergulhos encontrados
+
 
   /api/diveLogs/title/{title}:
     get:
@@ -463,7 +431,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - title: title
+        - name: title
           in: path
           required: true
           schema:
@@ -472,19 +440,25 @@ paths:
         '200':
           description: Mergulhos encontrados
 
-  /api/diveLogs/date/{date}:
-    get:
+  /api/diveLogs/date:
+    post:
       summary: Busca mergulhos por Data
       tags:
         - dive logs
       security:
         - bearerAuth: []
-      parameters:
-        - name: date
-          in: path
-          required: true
-          schema:
-            type: date
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - date
+              properties:
+                date: 
+                  type: string
+                  format: date
       responses:
         '200':
           description: Mergulhos encontrados
@@ -517,6 +491,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do mergulho
       responses:
         '200':
           description: Mergulho encontrado
@@ -532,6 +507,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do mergulho
       requestBody:
         required: true
         content:
@@ -553,32 +529,36 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do mergulho
       responses:
         '204':
           description: Mergulho deletado com sucesso
 
   /api/diveStatistics:
-    get:
+    post:
       summary: Buscar estatísticas de mergulho por token do usuário
       tags:
         - dive statistics
       security:
         - bearerAuth: []
-      parameters:
-        - name: startDate
-          in: query
-          required: false
-          schema:
-            type: string
-            format: date
-          description: Data de início do resgistro de mergulhos para filtrar as estatísticas
-        - name: endDate
-          in: query
-          required: false
-          schema:
-            type: string
-            format: date
-          description: Data de fim do resgistro de mergulhos para filtrar as estatísticas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - startDate
+              - endDate
+              properties:
+                startDate: 
+                  type: string
+                  format: date
+                  description: Data de início do resgistro de mergulhos para filtrar as estatísticas
+                endDate: 
+                  type: string
+                  format: date
+                  description: Data de fim do resgistro de mergulhos para filtrar as estatísticas
       responses:
         '200':
           description: Estatísticas de mergulho encontradas
@@ -628,6 +608,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do ponto de mergulho
       responses:
         '200':
           description: Ponto de mergulho encontrado
@@ -780,6 +761,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do comentário
       responses:
         '200':
           description: Comentário encontrado
@@ -795,6 +777,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do comentário
       requestBody:
         required: true
         content:
@@ -816,6 +799,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do comentário
       responses:
         '204':
           description: Comentário deletado com sucesso
@@ -911,11 +895,6 @@ definitions:
         type: string
         description: O ID do endereço do usuário.
         example: 60d0fe4f5311236168a109ca
-      createdDate:
-        type: string
-        format: date-time
-        description: A data de criação do usuário.
-        example: 2023-06-01T10:00:00Z
   UserUpdate:
     type: object
     properties:
@@ -986,7 +965,6 @@ definitions:
     - type
     - depth
     - bottomTimeInMinutes
-    - userId
     properties:
       title:
         type: string
@@ -1134,10 +1112,6 @@ definitions:
               type: string
               description: Tipo de conteúdo da foto (por exemplo, image/jpeg).
               example: image/jpeg
-      userId:
-        type: string
-        description: Identificador do usuário que registrou o mergulho.
-        example: 60d0fe4f5311236168a109ca
   DiveStatistics:
     type: object
     properties:
