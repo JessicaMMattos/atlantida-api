@@ -14,8 +14,11 @@ class DiveLogsRepository {
 }
 
  static async findByDateRange(startDate, endDate, userId) {
+   const startOfDay = `${startDate}T00:00:00.000Z`;
+   const endOfDay = `${endDate}T23:59:59.999Z`;
+
    return await DiveLog.find({
-     date: { $gte: startDate, $lte: endDate },
+     date: { $gte: startOfDay, $lte: endOfDay },
      userId: userId
    });
 }
