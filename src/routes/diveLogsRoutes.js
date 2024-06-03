@@ -7,10 +7,10 @@ const diveLogsRoutes = express.Router();
 diveLogsRoutes
   .get('/api/diveLogs/:id', DiveLogsController.findDiveLogById)
   .get('/api/diveLogs', bearer, DiveLogsController.findDiveLogsByToken)
-  .get('/api/diveLogs/dateRange', bearer, DiveLogsController.findDiveLogsByDateRange)
   .get('/api/diveLogs/title/:title', bearer, DiveLogsController.findDiveLogsByTitle)
-  .get('/api/diveLogs/rating/:rating', bearer, DiveLogsController.findDiveLogsByRating)
-  .get('/api/diveLogs/location/:location', bearer, DiveLogsController.findDiveLogsByLocation)
+  .get('/api/diveLogs/location/:locationName', bearer, DiveLogsController.findDiveLogsByLocationName)
+  .post('/api/diveLogs/date', bearer, DiveLogsController.findDiveLogsByDate)
+  .post('/api/diveLogs/dateRange', bearer, DiveLogsController.findDiveLogsByDateRange)
   .post('/api/diveLogs', bearer, DiveLogsController.createDiveLog)
   .put('/api/diveLogs/:id', bearer, DiveLogsController.updateDiveLog)
   .delete('/api/diveLogs/:id', bearer, DiveLogsController.deleteDiveLog);

@@ -1,8 +1,0 @@
-version: "3.9"
-
-services:
-  atlantida-api:
-    image: atlantida-api:1.0
-    build: .
-    ports:
-      - "3000:3000"

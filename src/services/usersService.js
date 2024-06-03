@@ -6,14 +6,18 @@ import crypto from "crypto";
 import bcryptjs from 'bcryptjs';
 import sgMail from '@sendgrid/mail';
 import UserRepository from '../repositories/userRepository.js';
+import logger from '../utils/logger.js';
 
 class UsersService {
   static async encryptPassword(password) {
+    logger.info('UsersService.encryptPassword');
     const passwordEncrypted = await bcryptjs.hash(password, 12);
     return passwordEncrypted;
   }
 
   static async sendPasswordResetEmail(userEmail, newPassword) {
+    logger.info('UsersService.sendPasswordResetEmail');
+
     sgMail.setApiKey(process.env.TOKEN_SENDGRID);
 
     return new Promise((resolve, reject) => {
@@ -36,31 +40,31 @@ class UsersService {
           sgMail
             .send(msg)
             .then(() => {
-              console.log("Email sent");
+              logger.info('Password reset email sent');
               resolve();
             })
             .catch((error) => {
-              console.error(error);
+              logger.error(`Error sending email: ${error.message}`);
               reject(error);
             });
         });
     });
   }
- 
-  static async findUsers() {
-    return await UserRepository.findAll();
-  }
 
   static async findUserByToken(id) {
+    logger.info('UsersService.findUserByToken');
     return await UserRepository.findById(id);
   }
 
   static async createUser(userData) {
+    logger.info('UsersService.createUser');
     userData.password = await this.encryptPassword(userData.password);
     return await UserRepository.createUser(userData);
   }
 
   static async recoverPassword(email) {
+    logger.info('UsersService.recoverPassword');
+
     const user = await UserRepository.findOne({ email });
     if (!user) {
       throw new Error("Usuário não encontrado");
@@ -75,6 +79,8 @@ class UsersService {
  }
 
   static async updatePassword(id, currentPassword, newPassword) {
+    logger.info('UsersService.updatePassword');
+
     const user = await UserRepository.findById(id);
     const passwordMatch = await bcryptjs.compare(currentPassword, user.password);
     if (!passwordMatch) {
@@ -86,11 +92,14 @@ class UsersService {
   }
 
   static async updateUser(id, userData) {
+    logger.info('UsersService.updateUser');
+
     delete userData.password;
     return await UserRepository.findByIdAndUpdate(id, userData);
  }
 
   static async deleteUser(id) {
+    logger.info('UsersService.deleteUser');
     return await UserRepository.findByIdAndDelete(id);
   }
 }

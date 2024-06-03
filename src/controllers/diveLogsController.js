@@ -27,7 +27,7 @@ class DiveLogsController {
 
  static async findDiveLogsByDateRange(req, res) {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate } = req.body;
     const userId = await TokenService.returnUserIdToToken(req.headers.authorization);
 
     const diveLogs = await DiveLogsService.findDiveLogsByDateRange(startDate, endDate, userId);
@@ -49,24 +49,24 @@ static async findDiveLogsByTitle(req, res) {
   }
 }
 
-static async findDiveLogsByRating(req, res) {
+static async findDiveLogsByDate(req, res) {
   try {
-    const { rating } = req.params;
+    const { date } = req.body;
     const userId = await TokenService.returnUserIdToToken(req.headers.authorization);
 
-    const diveLogs = await DiveLogsService.findDiveLogsByRating(rating, userId);
+    const diveLogs = await DiveLogsService.findDiveLogsByDate(date, userId);
     return res.status(200).json(diveLogs);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 }
 
-static async findDiveLogsByLocation(req, res) {
+static async findDiveLogsByLocationName(req, res) {
   try {
-    const { location } = req.params;
+    const { locationName } = req.params;
     const userId = await TokenService.returnUserIdToToken(req.headers.authorization);
 
-    const diveLogs = await DiveLogsService.findDiveLogsByLocation(location, userId);
+    const diveLogs = await DiveLogsService.findDiveLogsByLocationName(locationName, userId);
     return res.status(200).json(diveLogs);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -75,6 +75,7 @@ static async findDiveLogsByLocation(req, res) {
 
  static async createDiveLog(req, res) {
   try {
+    req.body.userId = await TokenService.returnUserIdToToken(req.headers.authorization);
     const newDiveLog = await DiveLogsService.createDiveLog(req.body);
 
     return res.status(201).set('Location', `/api/diveLogs/${newDiveLog._id}`).json(newDiveLog);

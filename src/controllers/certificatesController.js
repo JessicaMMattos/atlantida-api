@@ -17,8 +17,8 @@ class CertificatesController {
 
   static async findCertificateByToken(req, res) {
     try {
-      const id = await TokenService.returnUserIdToToken(req.headers.authorization);
-      const certificates = await CertificatesService.findCertificateByUserId(id);
+      const userId = await TokenService.returnUserIdToToken(req.headers.authorization);
+      const certificates = await CertificatesService.findCertificateByUserId(userId);
 
       return res.status(200).send(certificates);
     } catch (err) {
@@ -28,8 +28,8 @@ class CertificatesController {
 
   static async findExpiredCertificates(req, res) {
     try {
-       const id = await TokenService.returnUserIdToToken(req.headers.authorization);
-       const expiredCertificates = await CertificatesService.findExpiredCertificates(id);
+       const userId = await TokenService.returnUserIdToToken(req.headers.authorization);
+       const expiredCertificates = await CertificatesService.findExpiredCertificates(userId);
 
        res.status(200).json(expiredCertificates);
     } catch (error) {
@@ -39,6 +39,7 @@ class CertificatesController {
 
   static async createCertificate(req, res) {
     try {
+      req.body.userId = await TokenService.returnUserIdToToken(req.headers.authorization);
       const newCertificate = await CertificatesService.createCertificate(req.body);
 
       return res.status(201).set('Location', `/api/certificates/${newCertificate._id}`).json(newCertificate);

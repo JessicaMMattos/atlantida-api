@@ -5,6 +5,6 @@ import { bearer } from '../middleware/autenticationMiddleware.js';
 const diveStatisticsRoutes = express.Router();
 
 diveStatisticsRoutes
- .get('/api/diveStatistics', bearer, DiveStatisticsController.findDiveStatisticsByToken);
+ .post('/api/diveStatistics', bearer, DiveStatisticsController.findDiveStatisticsByToken);
 
 export default diveStatisticsRoutes;

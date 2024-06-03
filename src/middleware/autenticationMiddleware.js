@@ -14,7 +14,7 @@ export async function local(req, res, next) {
       }
 
       if (!user) {
-        return res.status(401).json();
+        return res.status(401).json('Credenciais inválidas');
       }
 
       req.user = user;

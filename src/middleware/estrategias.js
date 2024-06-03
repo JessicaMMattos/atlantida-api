@@ -1,4 +1,3 @@
-/* eslint-disable quote-props */
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import BearerStrategy from 'passport-http-bearer';
