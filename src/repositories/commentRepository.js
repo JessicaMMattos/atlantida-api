@@ -9,6 +9,10 @@ class CommentRepository {
     return await Comment.find({ divingSpotId });
  }
 
+ static async findByUserId(userId) {
+   return await Comment.find({ userId });
+}
+
  static async create(data) {
     const comment = new Comment(data);
     return await comment.save();

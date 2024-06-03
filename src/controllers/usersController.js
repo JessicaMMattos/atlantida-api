@@ -2,15 +2,6 @@ import UsersService from '../services/usersService.js';
 import TokenService from '../services/tokenService.js';
 
 class UserController {
-  static async findUsers(_req, res) {
-    try {
-      const users = await UsersService.findUsers();
-      res.status(200).json(users);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
- };
-
   static validateToken = async (_req, res) => {
     try {
       res.status(200).json({ message: 'Token valido' });

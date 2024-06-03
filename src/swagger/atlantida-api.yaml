@@ -108,20 +108,6 @@ paths:
           description: Endereço excluído com sucesso
 
   /api/users:
-    get:
-      summary: Listar todos os usuários
-      description: Lista todos os usuários do sistema.
-      tags:
-        - users
-      responses:
-        '200':
-          description: Lista de usuários
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/definitions/User'
     post:
       summary: Criar novo usuário
       description: Crie um novo usuário no sistema.
@@ -140,41 +126,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/User'
-
-  /api/users/{id}:
-    get:
-      summary: Obter usuário por ID
-      description: Obtém os detalhes de um usuário específico.
-      security:
-        - bearerAuth: []
-      tags:
-        - users
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: O ID do usuário
-      responses:
-        '200':
-          description: Detalhes do usuário
-          content:
-            application/json:
-              schema:
-                $ref: '#/definitions/User'
     put:
-      summary: Atualizar usuário
+      summary: Atualizar usuário pelo token
       description: Atualiza os detalhes de um usuário.
       security:
         - bearerAuth: []
       tags:
         - users
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: O ID do usuário
       requestBody:
         required: true
         content:
@@ -185,21 +143,27 @@ paths:
         '200':
           description: Usuário atualizado com sucesso
     delete:
-      summary: Deletar usuário (requer autenticação de administrador)
-      description: Exclui um usuário do sistema. Requer permissão de administrador.
+      summary: Deletar usuário pelo token
+      description: Exclui um usuário do sistema.
       security:
         - bearerAuth: []
       tags:
         - users
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: O ID do usuário
       responses:
         '204':
           description: Usuário excluído com sucesso
+
+  /api/validateToken:
+    get:
+      summary: Validar token do usuário
+      description: Verifica se o token do usuário é válido
+      security:
+        - bearerAuth: []
+      tags:
+        - users
+      responses:
+        '200':
+          description: Token valido
 
   /api/users/login:
     post:
@@ -293,7 +257,7 @@ paths:
         '200':
           description: Senha atualizada com sucesso
 
-  /certificates/{id}:
+  /api/certificates/{id}:
     get:
       summary: Busca certificado por id
       tags:
@@ -310,7 +274,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Certificate'
+                $ref: '#/definitions/Certificate'
     put:
       summary: Atualizar certificado
       tags:
@@ -328,14 +292,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Certificate'
+              $ref: '#/definitions/Certificate'
       responses:
         '200':
           description: Certificado atualizado com sucesso
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Certificate'
+                $ref: '#/definitions/Certificate'
     delete:
       summary: Deletar certificado
       tags:
@@ -352,9 +316,9 @@ paths:
         '204':
           description: Certificado deletado com sucesso
 
-  /certificates:
+  /api/certificates:
     get:
-      summary: Busca certificado por id do usuário
+      summary: Busca certificado por token do usuário
       tags:
         - certificates
       security:
@@ -367,7 +331,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Certificate'
+                  $ref: '#/definitions/Certificate'
     post:
       summary: Cadastrar certificados
       tags:
@@ -379,16 +343,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Certificate'
+              $ref: '#/definitions/Certificate'
       responses:
         '201':
           description: Certificado cadastrado com sucesso
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Certificate'
+                $ref: '#/definitions/Certificate'
 
-  /certificates/expired:
+  /api/certificates/expired:
     post:
       summary: Busca os certificados expirados
       tags:
@@ -403,7 +367,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Certificate'
+                  $ref: '#/definitions/Certificate'
 
   /api/diveLogs:
     post:
@@ -432,28 +396,32 @@ paths:
           description: Mergulhos encontrados
 
   /api/diveLogs/dateRange:
-    get:
+    post:
       summary: Busca mergulhos por intervalo de data
       tags:
         - dive logs
       security:
         - bearerAuth: []
-      parameters:
-        - name: startDate
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
-        - name: endDate
-          in: query
-          required: true
-          schema:
-            type: string
-            format: date
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - startDate
+                - endDate
+              properties:
+                startDate: 
+                  type: string
+                  format: date
+                endDate: 
+                  type: string
+                  format: date
       responses:
         '200':
           description: Mergulhos encontrados
+
 
   /api/diveLogs/title/{title}:
     get:
@@ -463,7 +431,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - title: title
+        - name: title
           in: path
           required: true
           schema:
@@ -472,32 +440,38 @@ paths:
         '200':
           description: Mergulhos encontrados
 
-  /api/diveLogs/rating/{rating}:
-    get:
-      summary: Busca mergulhos por rating
+  /api/diveLogs/date:
+    post:
+      summary: Busca mergulhos por Data
       tags:
         - dive logs
       security:
         - bearerAuth: []
-      parameters:
-        - name: rating
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - date
+              properties:
+                date: 
+                  type: string
+                  format: date
       responses:
         '200':
           description: Mergulhos encontrados
 
-  /api/diveLogs/location/{location}:
+  /api/diveLogs/location/{locationName}:
     get:
-      summary: Busca mergulhos por localização
+      summary: Busca mergulhos por nome da localização
       tags:
         - dive logs
       security:
         - bearerAuth: []
       parameters:
-        - name: location
+        - name: locationName
           in: path
           required: true
           schema:
@@ -517,6 +491,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do mergulho
       responses:
         '200':
           description: Mergulho encontrado
@@ -532,6 +507,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do mergulho
       requestBody:
         required: true
         content:
@@ -553,26 +529,39 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do mergulho
       responses:
         '204':
           description: Mergulho deletado com sucesso
 
   /api/diveStatistics:
-    get:
-      summary: Buscar estatísticas do usuário por UserId
+    post:
+      summary: Buscar estatísticas de mergulho por token do usuário
       tags:
         - dive statistics
       security:
         - bearerAuth: []
-      parameters:
-        - name: userId
-          in: query
-          required: true
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - startDate
+              - endDate
+              properties:
+                startDate: 
+                  type: string
+                  format: date
+                  description: Data de início do resgistro de mergulhos para filtrar as estatísticas
+                endDate: 
+                  type: string
+                  format: date
+                  description: Data de fim do resgistro de mergulhos para filtrar as estatísticas
       responses:
         '200':
-          description: Estatísticas do usuário encontradas
+          description: Estatísticas de mergulho encontradas
           content:
             application/json:
               schema:
@@ -619,6 +608,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do ponto de mergulho
       responses:
         '200':
           description: Ponto de mergulho encontrado
@@ -771,6 +761,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do comentário
       responses:
         '200':
           description: Comentário encontrado
@@ -786,6 +777,7 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do comentário
       requestBody:
         required: true
         content:
@@ -807,9 +799,21 @@ paths:
           required: true
           schema:
             type: string
+          description: O ID do comentário
       responses:
         '204':
           description: Comentário deletado com sucesso
+
+  /api/commentsByUserToken:
+    get:
+      summary: Filtrar por token do usuário
+      tags:
+        - comments
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Comentários encontrados
 
 definitions:
   Address:
@@ -826,27 +830,35 @@ definitions:
       country:
         type: string
         description: O país do usuário. (e.g., Brasil)
+        example: Brasil
       state:
         type: string
         description: O estado do usuário dentro do país. (e.g., SP)
+        example: SP
       city:
         type: string
         description: A cidade do usuário.
+        example: São Paulo
       neighborhood:
         type: string
         description: O bairro do usuário. (opcional)
+        example: Centro
       street:
         type: string
         description: O endereço da rua do usuário.
+        example: Rua das Flores
       number:
         type: integer
         description: O número do endereço do usuário.
+        example: 123
       complement:
         type: string
         description: Informações adicionais de endereço (e.g., número do apartamento, andar). (opcional)
+        example: Apt 456
       postalCode:
         type: string
         description: O código postal do usuário.
+        example: 01000-000
   User:
     type: object
     required:
@@ -860,206 +872,232 @@ definitions:
       firstName:
         type: string
         description: O primeiro nome do usuário.
+        example: João
       lastName:
         type: string
         description: O sobrenome do usuário.
+        example: Silva
       email:
         type: string
         description: O email do usuário.
         format: email
+        example: joao.silva@example.com
       password:
         type: string
         description: A senha do usuário (armazenada com hash criptográfico).
+        example: f0rt3$$264
       birthDate:
         type: string
         format: date
         description: A data de nascimento do usuário.
+        example: 1990-01-01
       addressId:
         type: string
         description: O ID do endereço do usuário.
-      profilePicture:
-        type: object
-        properties:
-          data:
-            type: string
-            format: byte
-            description: Dados da imagem do perfil em formato binário.
-          contentType:
-            type: string
-            description: Tipo de conteúdo da imagem do perfil.
-      createdDate:
-        type: string
-        format: date-time
-        description: A data de criação do usuário.
+        example: 60d0fe4f5311236168a109ca
   UserUpdate:
     type: object
     properties:
       firstName:
         type: string
         description: O primeiro nome do usuário (opcional).
+        example: João
       lastName:
         type: string
         description: O sobrenome do usuário (opcional).
+        example: Silva
       birthDate:
         type: string
         format: date
         description: A data de nascimento do usuário (opcional).
-      profilePicture:
-        type: object
-        properties:
-          data:
-            type: string
-            format: byte
-            description: Dados da imagem do perfil em formato binário.
-          contentType:
-            type: string
-            description: Tipo de conteúdo da imagem do perfil.
+        example: 1990-01-01
   Certificate:
     type: object
     required:
       - certificateName
       - accreditor
       - certificationNumber
-      - userId
     properties:
       certificateName:
         type: string
+        description: Nome do certificado.
+        example: Open Water Diver
       accreditor:
         type: string
+        description: Entidade que concedeu o certificado.
+        example: PADI
       certificationNumber:
         type: string
+        description: Número do certificado.
+        example: 123456
       certificationLevel:
         type: string
+        description: Nível da certificação.
+        example: Beginner
       issuanceDate:
         type: string
         format: date
+        description: Data de emissão do certificado.
+        example: 2020-01-01
       expirationDate:
         type: string
         format: date
+        description: Data de expiração do certificado.
+        example: 2025-01-01
       certificateImage:
         type: object
         properties:
           data:
             type: string
             format: byte
+            description: Dados da imagem do certificado codificados em base64.
+            example: iVBORw0KGgoAAAANSUhEUgAAAAUA...
           contentType:
             type: string
-      userId:
-        type: string
+            description: Tipo de conteúdo da imagem do certificado.
+            example: image/jpeg
   DiveLog:
     type: object
     required:
     - title
-    - location
+    - divingSpotId
     - date
     - type
     - depth
     - bottomTimeInMinutes
-    - userId
     properties:
       title:
         type: string
-        description: Título do mergulho
-      location:
+        description: Título do mergulho.
+        example: Mergulho na Ilha Grande
+      divingSpotId:
         type: string
-        description: Localização do mergulho
+        description: Identificador do ponto de mergulho.
+        example: 60d0fe4f5311236168a109cb
       date:
         type: string
         format: date-time
-        description: Data e hora do mergulho
+        description: Data e hora do mergulho.
+        example: 2023-05-20T14:30:00Z
       type:
         type: string
-        description: Tipo de mergulho (por exemplo, Scuba Diving)
+        description: Tipo de mergulho (por exemplo, Scuba Diving).
+        example: Scuba Diving
       depth:
         type: number
         format: float
-        description: Profundidade máxima do mergulho em metros
+        description: Profundidade máxima do mergulho em metros.
+        example: 30.5
       bottomTimeInMinutes:
         type: integer
-        description: Tempo de permanência na água em minutos
+        description: Tempo de permanência na água em minutos.
+        example: 45
       waterType:
         type: string
-        description: Tipo de água (Salgada ou Doce)
+        description: Tipo de água (Salgada ou Doce).
+        example: Salgada
       waterBody:
         type: string
-        description: Corpo de água (por exemplo, Oceano, Lago, Pedreira, Rio ou Outro)
+        description: Corpo de água (por exemplo, Oceano, Lago, Pedreira, Rio ou Outro).
+        example: Oceano
       weatherConditions:
         type: string
-        description: Condições meteorológicas durante o mergulho
+        description: Condições meteorológicas durante o mergulho.
+        example: Ensolarado
       temperature:
         type: object
-        description: Temperaturas em diferentes partes do corpo e da água
+        description: Temperaturas em diferentes partes do corpo e da água.
         properties:
           air:
             type: number
             format: float
-            description: Temperatura do ar em graus Celsius
+            description: Temperatura do ar em graus Celsius.
+            example: 25.0
           surface:
             type: number
             format: float
-            description: Temperatura da superfície da água em graus Celsius
+            description: Temperatura da superfície da água em graus Celsius.
+            example: 22.0
           bottom:
             type: number
             format: float
-            description: Temperatura do fundo da água em graus Celsius
+            description: Temperatura do fundo da água em graus Celsius.
+            example: 18.0
       visibility:
         type: string
-        description: Visibilidade da água
+        description: Visibilidade da água.
       waves:
         type: string
-        description: Condições das ondas
+        description: Condições das ondas.
+        example: Calmas
       current:
         type: string
-        description: Condições da corrente
+        description: Condições da corrente.
+        example: Fraca
       surge:
         type: string
-        description: Condições de surge
+        description: Condições de surge.
+        example: Moderado
       suit:
         type: string
-        description: Tipo de traje usado
+        description: Tipo de traje usado.
+        example: Traje de neoprene 5mm
       weight:
         type: string
-        description: Peso do traje e equipamento
+        description: Peso do traje e equipamento.
+        example: 8
       additionalEquipment:
         type: array
         items:
           type: string
-        description: Equipamentos adicionais usados
+        description: Equipamentos adicionais usados.
+        example:
+          - Lanterna
+          - Câmera subaquática
       cylinder:
         type: object
-        description: Informações sobre o cilindro de ar usado
+        description: Informações sobre o cilindro de ar usado.
         properties:
           type:
             type: string
-            description: Tipo do cilindro (por exemplo, Aluminum)
+            description: Tipo do cilindro (por exemplo, Aluminum).
+            example: Aluminum
           size:
             type: number
             format: float
-            description: Tamanho do cilindro em litros
+            description: Tamanho do cilindro em litros.
+            example: 12
           gasMixture:
             type: string
-            description: Mistura de gases no cilindro (por exemplo, Air)
+            description: Mistura de gases no cilindro (por exemplo, Air).
+            example: Air
           initialPressure:
             type: number
             format: float
-            description: Pressão inicial do cilindro em bar
+            description: Pressão inicial do cilindro em bar.
+            example: 200
           finalPressure:
             type: number
             format: float
-            description: Pressão final do cilindro em bar
+            description: Pressão final do cilindro em bar.
+            example: 50
           usedAmount:
             type: number
             format: float
-            description: Quantidade de gás usado em litros
+            description: Quantidade de gás usado em litros.
+            example: 150
       rating:
-        type: string
-        description: Avaliação do mergulho
+        type: integer
+        description: Avaliação do mergulho.
+        example: 5
+      difficulty:
+        type: integer
+        description: Dificuldade do mergulho.
+        example: 3
       notes:
         type: string
-        description: Observações sobre o mergulho
-      buddy:
-        type: string
-        description: Nome do companheiro de mergulho
+        description: Observações sobre o mergulho.
+        example: Mergulho tranquilo com ótima visibilidade.
       photos:
         type: array
         items:
@@ -1068,39 +1106,45 @@ definitions:
             data:
               type: string
               format: byte
-              description: Dados da foto codificados em base64
+              description: Dados da foto codificados em base64.
+              example: iVBORw0KGgoAAAANSUhEUgAAAAUA...
             contentType:
               type: string
-              description: Tipo de conteúdo da foto (por exemplo, image/jpeg)
-      userId:
-        type: string
-        description: Identificador do usuário que registrou o mergulho
+              description: Tipo de conteúdo da foto (por exemplo, image/jpeg).
+              example: image/jpeg
   DiveStatistics:
     type: object
     properties:
       totalDives:
         type: integer
-        description: Número total de mergulhos realizados pelo usuário
+        description: Número total de mergulhos realizados pelo usuário.
+        example: 150
       totalDepth:
         type: number
         format: float
-        description: Profundidade total de todos os mergulhos do usuário em metros
+        description: Profundidade total de todos os mergulhos do usuário em metros.
+        example: 4500.0
       averageDepth:
         type: number
         format: float
-        description: Profundidade média dos mergulhos do usuário em metros
+        description: Profundidade média dos mergulhos do usuário em metros.
+        example: 30.0
       totalBottomTime:
         type: integer
-        description: Tempo total de permanência na água em minutos
+        description: Tempo total de permanência na água em minutos.
+        example: 6750
       mostCommonWaterBody:
         type: string
-        description: Corpo de água mais comum nos mergulhos do usuário
+        description: Corpo de água mais comum nos mergulhos do usuário.
+        example: Oceano
       mostCommonWeatherCondition:
         type: string
-        description: Condição meteorológica mais comum nos mergulhos do usuário
+        description: Condição meteorológica mais comum nos mergulhos do usuário.
+        example: Ensolarado
       userId:
         type: string
-        description: Identificador do usuário que registrou as estatísticas
+        description: Identificador do usuário que registrou as estatísticas.
+        example: 60d0fe4f5311236168a109ca
   DivingSpot:
     type: object
     required:
@@ -1109,20 +1153,24 @@ definitions:
     properties:
       name:
         type: string
-        description: Nome do ponto de mergulho
+        description: Nome do ponto de mergulho.
+        example: Ilha Grande
       description:
         type: string
-        description: Descrição do ponto de mergulho
+        description: Descrição do ponto de mergulho.
+        example: Local com ótima biodiversidade marinha.
       image:
         type: object
         properties:
           data:
             type: string
             format: byte
-            description: Dados da imagem codificados em base64
+            description: Dados da imagem codificados em base64.
+            example: iVBORw0KGgoAAAANSUhEUgAAAAUA...
           contentType:
             type: string
-            description: Tipo de conteúdo da imagem (por exemplo, image/jpeg)
+            description: Tipo de conteúdo da imagem (por exemplo, image/jpeg).
+            example: image/jpeg
       location:
         type: object
         required:
@@ -1132,24 +1180,26 @@ definitions:
           type:
             type: string
             enum: ['Point']
-            description: Tipo de localização (apenas 'Point' é suportado)
+            description: Tipo de localização (apenas 'Point' é suportado).
+            example: Point
           coordinates:
             type: array
             items:
               type: number
               format: float
-            description: Coordenadas do ponto de mergulho (latitude, longitude)
+            description: Coordenadas do ponto de mergulho (latitude, longitude).
+            example: [-23.150, -44.250]
       averageRating:
         type: number
-        description: Classificação média do ponto de mergulho
+        description: Classificação média do ponto de mergulho.
         default: 0
       averageDifficulty:
         type: number
-        description: Dificuldade média do ponto de mergulho
+        description: Dificuldade média do ponto de mergulho.
         default: 0
       numberOfComments:
         type: integer
-        description: Número de comentários sobre o ponto de mergulho
+        description: Número de comentários sobre o ponto de mergulho.
         default: 0
   DivingSpotCreate:
     type: object
@@ -1159,20 +1209,24 @@ definitions:
     properties:
       name:
         type: string
-        description: Nome do ponto de mergulho
+        description: Nome do ponto de mergulho.
+        example: Ilha Grande
       description:
         type: string
-        description: Descrição do ponto de mergulho
+        description: Descrição do ponto de mergulho.
+        example: Local com ótima biodiversidade marinha.
       image:
         type: object
         properties:
           data:
             type: string
             format: byte
-            description: Dados da imagem codificados em base64
+            description: Dados da imagem codificados em base64.
+            example: iVBORw0KGgoAAAANSUhEUgAAAAUA...
           contentType:
             type: string
-            description: Tipo de conteúdo da imagem (por exemplo, image/jpeg)
+            description: Tipo de conteúdo da imagem (por exemplo, image/jpeg).
+            example: image/jpeg
       location:
         type: object
         required:
@@ -1182,29 +1236,29 @@ definitions:
           type:
             type: string
             enum: ['Point']
-            description: Tipo de localização (apenas 'Point' é suportado)
+            description: Tipo de localização (apenas 'Point' é suportado).
+            example: Point
           coordinates:
             type: array
             items:
               type: number
               format: float
-            description: Coordenadas do ponto de mergulho (latitude, longitude)
+            description: Coordenadas do ponto de mergulho (latitude, longitude).
+            example: [-23.150, -44.250]
   Comment:
     type: object
     required:
     - rating
-    - userId
     - divingSpotId
     properties:
       rating:
         type: integer
-        description: Classificação do comentário
-      difficulty:
-        type: integer
-        description: Dificuldade do comentário
+        description: Classificação do comentário.
+        example: 5
       comment:
         type: string
-        description: Texto do comentário
+        description: Texto do comentário.
+        example: Ótimo ponto de mergulho, com excelente visibilidade e vida marinha abundante.
       photos:
         type: array
         items:
@@ -1213,13 +1267,13 @@ definitions:
             data:
               type: string
               format: byte
-              description: Dados da foto codificados em base64
+              description: Dados da foto ou vídeo codificados em base64.
+              example: iVBORw0KGgoAAAANSUhEUgAAAAUA...
             contentType:
               type: string
-              description: Tipo de conteúdo da foto (por exemplo, image/jpeg)
-      userId:
-        type: string
-        description: Identificador do usuário que fez o comentário
+              description: Tipo de conteúdo da foto (por exemplo, image/jpeg).
+              example: image/jpeg
       divingSpotId:
         type: string
-        description: Identificador do ponto de mergulho relacionado ao comentário
+        description: Identificador do ponto de mergulho relacionado ao comentário.
+        example: 60d0fe4f5311236168a109cb

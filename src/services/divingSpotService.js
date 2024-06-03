@@ -1,12 +1,16 @@
 import DivingSpotRepository from '../repositories/divingSpotRepository.js';
+import DiveLogsRepository from '../repositories/diveLogsRepository.js';
 import CommentRepository from '../repositories/commentRepository.js';
+import logger from '../utils/logger.js';
 
 class DivingSpotService {
  static async findAllDivingSpots() {
+   logger.info('DivingSpotService.findAllDivingSpots');
    return await DivingSpotRepository.findAll();
  }
 
  static async findDivingSpotById(id) {
+  logger.info('DivingSpotService.findDivingSpotById');
    const divingSpot = await DivingSpotRepository.findById(id);
    if (!divingSpot) {
      throw new Error('Ponto de mergulho não encontrado');
@@ -15,26 +19,32 @@ class DivingSpotService {
  }
 
  static async findDivingSpotsByName(name) {
+  logger.info('DivingSpotService.findDivingSpotsByName');
     return await DivingSpotRepository.findByName(name);
  }
 
  static async findDivingSpotsNearLocation(latitude, longitude) {
+  logger.info('DivingSpotService.findDivingSpotsNearLocation');
    return await DivingSpotRepository.findNearLocation(latitude, longitude);
  }
 
  static async filterDivingSpotsByRating(rating) {
+  logger.info('DivingSpotService.filterDivingSpotsByRating');
     return await DivingSpotRepository.findByRating(rating);
  }
 
  static async filterDivingSpotsByDifficulty(difficulty) {
+  logger.info('DivingSpotService.filterDivingSpotsByDifficulty');
     return await DivingSpotRepository.findByDifficulty(difficulty);
  }
 
  static async createDivingSpot(divingSpotData) {
+  logger.info('DivingSpotService.createDivingSpot');
    return await DivingSpotRepository.create(divingSpotData);
  }
 
   static async updateAverageRating(divingSpotId) {
+    logger.info('DivingSpotService.updateAverageRating');
     const comments = await CommentRepository.findByDivingSpotId(divingSpotId);
     const totalRating = comments.reduce((sum, comment) => sum + comment.rating, 0);
     const averageRating = comments.length > 0 ? parseFloat((totalRating / comments.length).toFixed(1)) : 0;
@@ -43,14 +53,15 @@ class DivingSpotService {
   }
 
   static async updateAverageDifficulty(divingSpotId) {
-    const comments = await CommentRepository.findByDivingSpotId(divingSpotId);
+    logger.info('DivingSpotService.updateAverageDifficulty');
+    const diveLogs = await DiveLogsRepository.findByDivingSpotId(divingSpotId);
+    const validDiveLogs = diveLogs.filter(diveLog => diveLog.difficulty !== undefined);
 
-    const validComments = comments.filter(comment => comment.difficulty !== undefined);
-    const totalDifficulty = validComments.reduce((sum, comment) => sum + comment.difficulty, 0);
-    const averageDifficulty = validComments.length > 0 ? parseFloat((totalDifficulty / validComments.length).toFixed(1)) : 0;
-   
+    const totalDifficulty = validDiveLogs.reduce((sum, diveLog) => sum + diveLog.difficulty, 0);
+    const averageDifficulty = validDiveLogs.length > 0 ? parseFloat((totalDifficulty / validDiveLogs.length).toFixed(1)) : 0;
+
     return await DivingSpotRepository.updateById(divingSpotId, { averageDifficulty });
-  }   
+  }
 }
 
 export default DivingSpotService;

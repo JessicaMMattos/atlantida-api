@@ -5,7 +5,6 @@ import { bearer, local } from '../middleware/autenticationMiddleware.js';
 const usersRoutes = express.Router();
 
 usersRoutes
-  .get('/api/users', UserController.findUsers)
   .get('/api/validateToken', bearer, UserController.validateToken)
   .post('/api/users/findUserByToken', bearer, UserController.findUserByToken)
   .post('/api/users', UserController.createUser)

@@ -3,12 +3,14 @@ dotenvConfig();
 
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
+import logger from '../utils/logger.js';
 
 const chaveJWTDev = process.env.CHAVE_JWT;
 
 class TokenService {
 
   static async createTokenJWT(email) {
+    logger.info('TokenService.createTokenJWT');
     const account = await User.findOne({ email: email });
 
     const payload = {
@@ -20,6 +22,7 @@ class TokenService {
   }
 
   static async createNewTokenJWT(req) {
+    logger.info('TokenService.createNewTokenJWT');
     const token = req.headers.authorization;
 
     const id = await this.returnUserIdToToken(token);
@@ -29,6 +32,7 @@ class TokenService {
   }
 
   static async returnUserIdToToken(token) {
+    logger.info('TokenService.returnUserIdToToken');
     const tokenJWT = token.replace("Bearer ", "");
 
     const decoded = jwt.verify(tokenJWT, chaveJWTDev);

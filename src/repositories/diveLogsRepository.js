@@ -9,9 +9,16 @@ class DiveLogsRepository {
     return await DiveLog.find({ userId });
  }
 
+ static async findByDivingSpotId(divingSpotId) {
+   return await DiveLog.find({ divingSpotId });
+}
+
  static async findByDateRange(startDate, endDate, userId) {
+   const startOfDay = `${startDate}T00:00:00.000Z`;
+   const endOfDay = `${endDate}T23:59:59.999Z`;
+
    return await DiveLog.find({
-     date: { $gte: startDate, $lte: endDate },
+     date: { $gte: startOfDay, $lte: endOfDay },
      userId: userId
    });
 }
@@ -24,20 +31,26 @@ static async findByTitle(title, userId) {
    return await DiveLog.find(query).sort({ name: 1 });
 }
 
-static async findByRating(rating, userId) {
+static async findByDate(date, userId) {
+   const startOfDay = `${date}T00:00:00.000Z`;
+   const endOfDay = `${date}T23:59:59.999Z`;
+
    return await DiveLog.find({
-     rating: rating,
-     userId: userId
+      date: {
+         $gte: startOfDay,
+         $lt: endOfDay
+      },
+      userId: userId
    });
 }
 
-static async findByLocation(location, userId) {
-   const query = {
-      location: { $regex: location, $options: 'i' },
-      userId: userId
-   };
-   return await DiveLog.find(query);
-}
+
+static async findByDivingSpotIdsAndUserId(divingSpotIds, userId) {
+   return await DiveLog.find({
+     divingSpotId: { $in: divingSpotIds },
+     userId: userId
+   });
+ }
 
  static async create(data) {
     const diveLog = new DiveLog(data);
