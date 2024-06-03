@@ -9,9 +9,9 @@ const commentSchema = new Schema({
     data: Buffer,
     contentType: String
   }],
-  createdDate: { type: Date, default: Date.now },
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   divingSpotId: { type: Schema.Types.ObjectId, ref: 'divingSpots', required: true },
+  createdDate: { type: Date, default: Date.now },
 });
 
 const Comment = mongoose.model('comments', commentSchema);

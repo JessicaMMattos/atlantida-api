@@ -49,7 +49,7 @@ class DiveLogsService {
     const newDiveLog = await DiveLogsRepository.create(diveLog);
 
     if (diveLog.difficulty) {
-      await DivingSpotService.updateAverageDifficulty(newDiveLog._id);
+      await DivingSpotService.updateAverageDifficulty(newDiveLog.divingSpotId);
     }
     return newDiveLog;
   }

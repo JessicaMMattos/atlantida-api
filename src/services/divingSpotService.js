@@ -54,7 +54,7 @@ class DivingSpotService {
 
   static async updateAverageDifficulty(divingSpotId) {
     logger.info('DivingSpotService.updateAverageDifficulty');
-    const diveLogs = await DiveLogsRepository.findByDivingSpotId({ divingSpotId });
+    const diveLogs = await DiveLogsRepository.findByDivingSpotId(divingSpotId);
     const validDiveLogs = diveLogs.filter(diveLog => diveLog.difficulty !== undefined);
 
     const totalDifficulty = validDiveLogs.reduce((sum, diveLog) => sum + diveLog.difficulty, 0);

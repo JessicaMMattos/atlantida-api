@@ -50,11 +50,6 @@ class UsersService {
         });
     });
   }
- 
-  static async findUsers() {
-    logger.info('UsersService.findUsers');
-    return await UserRepository.findAll();
-  }
 
   static async findUserByToken(id) {
     logger.info('UsersService.findUserByToken');

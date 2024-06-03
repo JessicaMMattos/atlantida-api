@@ -27,7 +27,7 @@ class DiveLogsController {
 
  static async findDiveLogsByDateRange(req, res) {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate } = req.body;
     const userId = await TokenService.returnUserIdToToken(req.headers.authorization);
 
     const diveLogs = await DiveLogsService.findDiveLogsByDateRange(startDate, endDate, userId);
@@ -51,7 +51,7 @@ static async findDiveLogsByTitle(req, res) {
 
 static async findDiveLogsByDate(req, res) {
   try {
-    const { date } = req.params;
+    const { date } = req.body;
     const userId = await TokenService.returnUserIdToToken(req.headers.authorization);
 
     const diveLogs = await DiveLogsService.findDiveLogsByDate(date, userId);
@@ -75,6 +75,7 @@ static async findDiveLogsByLocationName(req, res) {
 
  static async createDiveLog(req, res) {
   try {
+    req.body.userId = await TokenService.returnUserIdToToken(req.headers.authorization);
     const newDiveLog = await DiveLogsService.createDiveLog(req.body);
 
     return res.status(201).set('Location', `/api/diveLogs/${newDiveLog._id}`).json(newDiveLog);

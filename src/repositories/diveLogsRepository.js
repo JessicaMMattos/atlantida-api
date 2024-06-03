@@ -29,11 +29,18 @@ static async findByTitle(title, userId) {
 }
 
 static async findByDate(date, userId) {
+   const startOfDay = `${date}T00:00:00.000Z`;
+   const endOfDay = `${date}T23:59:59.999Z`;
+
    return await DiveLog.find({
-      date: date,
-     userId: userId
+      date: {
+         $gte: startOfDay,
+         $lt: endOfDay
+      },
+      userId: userId
    });
 }
+
 
 static async findByDivingSpotIdsAndUserId(divingSpotIds, userId) {
    return await DiveLog.find({

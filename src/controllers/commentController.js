@@ -55,7 +55,7 @@ class CommentController {
         return res.status(404).json({ message: 'Comentário não encontrado' });
       }
   
-      if (comment.userId !== userId) {
+      if (comment.userId.toString() !== userId.toString()) {
         return res.status(403).json({ message: 'Usuário não autorizado a atualizar este comentário' });
       }
   
@@ -75,7 +75,7 @@ class CommentController {
         return res.status(404).json({ message: 'Comentário não encontrado' });
       }
 
-      if (comment.userId !== userId) {
+      if (comment.userId.toString() !== userId.toString()) {
         return res.status(403).json({ message: 'Usuário não autorizado a deletar este comentário' });
       }
 
