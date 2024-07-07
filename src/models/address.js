@@ -14,6 +14,6 @@ const addressSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
 });
 
-const Address = mongoose.model('users', addressSchema);
+const Address = mongoose.model('addresses', addressSchema);
 
 export default Address;
