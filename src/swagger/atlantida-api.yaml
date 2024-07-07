@@ -107,6 +107,26 @@ paths:
         '204':
           description: Endereço excluído com sucesso
 
+  /addresses/user/{userId}:
+    get:
+      summary: Busca endereços pelo ID do usuário
+      description: Obtém os detalhes de um endereço específico.
+      tags:
+        - addresses
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: O id do usuário
+      responses:
+        '200':
+          description: Detalhes do endereço
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Address'
+
   /api/users:
     post:
       summary: Criar novo usuário
@@ -826,6 +846,7 @@ definitions:
       - street
       - number
       - postalCode
+      - userId
     properties:
       country:
         type: string
@@ -859,6 +880,10 @@ definitions:
         type: string
         description: O código postal do usuário.
         example: 01000-000
+      userId:
+        type: string
+        description: O ID do usuário.
+        example: 60d0fe4f5311236168a109ca
   User:
     type: object
     required:
@@ -867,7 +892,6 @@ definitions:
     - email
     - password
     - birthDate
-    - addressId
     properties:
       firstName:
         type: string
@@ -891,10 +915,6 @@ definitions:
         format: date
         description: A data de nascimento do usuário.
         example: 1990-01-01
-      addressId:
-        type: string
-        description: O ID do endereço do usuário.
-        example: 60d0fe4f5311236168a109ca
   UserUpdate:
     type: object
     properties:

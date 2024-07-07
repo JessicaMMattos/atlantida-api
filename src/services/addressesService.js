@@ -7,6 +7,11 @@ class AddressesService {
     return await AddressRepository.findById(id);
  }
 
+ static async findAddressByUserId(userId) {
+   logger.info('AddressesService.findAdressByUserId');
+   return await AddressRepository.findAddressByUserId(userId);
+}
+
  static async createAddress(addressData) {
     logger.info('AddressesService.createAddress');
     return await AddressRepository.create(addressData);

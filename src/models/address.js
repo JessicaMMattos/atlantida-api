@@ -10,9 +10,10 @@ const addressSchema = new Schema({
   street: { type: String, required: true },
   number: { type: Number, required: true },
   complement: { type: String },
-  postalCode: { type: String, required: true }
+  postalCode: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
 });
 
-const Address = mongoose.model('addresses', addressSchema);
+const Address = mongoose.model('users', addressSchema);
 
 export default Address;
