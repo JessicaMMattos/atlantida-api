@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0] - 2024-07-07
+
+### Added
+- IdUser in the Address schema
+- Adresses routes:
+    - /addresses/user/:userId
+
+### Changed
+- Update libs:
+   - joi to v17.13.3,
+   - yaml to v2.4.5,
+   - nodemon to v3.1.4
+
+### Removed
+- User's idAddress
+
 ## [2.0.0] - 2024-06-02
 
 ### Added

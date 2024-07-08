@@ -5,6 +5,10 @@ class AddressRepository {
     return await Address.findById(id);
  }
 
+ static async findAddressByUserId(userId) {
+   return await Address.find({ userId: userId });
+}
+
  static async create(data) {
     const address = new Address(data);
     return await address.save();

@@ -10,7 +10,6 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   birthDate: { type: Date, required: true, validate: validateBirthDate },
   profilePicture: { data: Buffer, contentType: String },
-  addressId: { type: Schema.Types.ObjectId, ref: 'addresses', required: true },
   createdDate: { type: Date, default: Date.now },
 });
 

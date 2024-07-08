@@ -107,6 +107,26 @@ paths:
         '204':
           description: Endereço excluído com sucesso
 
+  /addresses/user/{userId}:
+    get:
+      summary: Busca endereços pelo ID do usuário
+      description: Obtém os detalhes de um endereço específico.
+      tags:
+        - addresses
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: O id do usuário
+      responses:
+        '200':
+          description: Detalhes do endereço
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Address'
+
   /api/users:
     post:
       summary: Criar novo usuário
@@ -125,7 +145,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/User'
+                $ref: '#/definitions/UserResponse'
     put:
       summary: Atualizar usuário pelo token
       description: Atualiza os detalhes de um usuário.
@@ -138,7 +158,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/UserUpdate'
+              $ref: '#/definitions/UserResponse'
       responses:
         '200':
           description: Usuário atualizado com sucesso
@@ -210,7 +230,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/User'
+                $ref: '#/definitions/UserResponse'
 
   /api/users/recoverPassword:
     post:
@@ -826,6 +846,7 @@ definitions:
       - street
       - number
       - postalCode
+      - userId
     properties:
       country:
         type: string
@@ -859,6 +880,10 @@ definitions:
         type: string
         description: O código postal do usuário.
         example: 01000-000
+      userId:
+        type: string
+        description: O ID do usuário.
+        example: 60d0fe4f5311236168a109ca
   User:
     type: object
     required:
@@ -867,7 +892,6 @@ definitions:
     - email
     - password
     - birthDate
-    - addressId
     properties:
       firstName:
         type: string
@@ -891,10 +915,42 @@ definitions:
         format: date
         description: A data de nascimento do usuário.
         example: 1990-01-01
-      addressId:
+  UserResponse:
+    type: object
+    required:
+    - _id
+    - firstName
+    - lastName
+    - email
+    - birthDate
+    - createdDate
+    properties:
+      _id:
         type: string
-        description: O ID do endereço do usuário.
+        description: id do usuário.
         example: 60d0fe4f5311236168a109ca
+      firstName:
+        type: string
+        description: O primeiro nome do usuário.
+        example: João
+      lastName:
+        type: string
+        description: O sobrenome do usuário.
+        example: Silva
+      email:
+        type: string
+        description: O email do usuário.
+        format: email
+        example: joao.silva@example.com
+      password:
+        type: string
+        description: A senha do usuário (armazenada com hash criptográfico).
+        example: f0rt3$$264
+      birthDate:
+        type: string
+        format: date
+        description: A data de nascimento do usuário.
+        example: 1990-01-01
   UserUpdate:
     type: object
     properties:
