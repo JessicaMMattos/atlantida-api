@@ -185,6 +185,37 @@ paths:
         '200':
           description: Token valido
 
+  /api/users/{email}:
+    post:
+      summary: Encontrar usuário por e-mail
+      description: Recupera informações do usuário com base no email fornecido.
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: O e-mail do usuário a ser recuperado.
+          schema:
+            type: string
+      tags:
+        - users
+      responses:
+        '200':
+          description: Usuário existente
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/UserResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+
   /api/users/login:
     post:
       summary: Efetuar login

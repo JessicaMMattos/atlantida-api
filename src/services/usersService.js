@@ -56,6 +56,11 @@ class UsersService {
     return await UserRepository.findById(id);
   }
 
+  static async findUserByEmail(email) {
+    logger.info('UsersService.findUserByEmail');
+    return await UserRepository.findOne({ email: email });
+  }
+
   static async createUser(userData) {
     logger.info('UsersService.createUser');
     userData.password = await this.encryptPassword(userData.password);
