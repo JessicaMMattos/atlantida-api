@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2024-07-23
+
+### Added
+- Route search user by email
+
 ## [3.0.0] - 2024-07-07
 
 ### Added
