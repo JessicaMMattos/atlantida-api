@@ -23,7 +23,7 @@ class UserController {
 
  static async findUserByEmail(req, res) {
     try {
-      const user = await UsersService.findUserByEmail(req.params.email);
+      const user = await UsersService.findUserByEmail(req.body.email);
       
       res.status(200).json(user);
     } catch (error) {

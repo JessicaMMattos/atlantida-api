@@ -185,17 +185,20 @@ paths:
         '200':
           description: Token valido
 
-  /api/users/{email}:
+  /api/users/email:
     post:
       summary: Encontrar usuário por e-mail
       description: Recupera informações do usuário com base no email fornecido.
-      parameters:
-        - name: email
-          in: path
-          required: true
-          description: O e-mail do usuário a ser recuperado.
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: O email do usuário.
       tags:
         - users
       responses:
