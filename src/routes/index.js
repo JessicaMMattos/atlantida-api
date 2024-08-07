@@ -18,7 +18,7 @@ const routes = (app) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   app.route('/').get((_, res) => {
-    res.status(200).send({ titulo: 'Anti-Fraude API' });
+    res.status(200).send({ titulo: 'Atlantida API' });
   });
 
   app.use(express.json());
