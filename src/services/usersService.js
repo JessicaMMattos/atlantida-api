@@ -91,9 +91,10 @@ class UsersService {
     if (!passwordMatch) {
       throw new Error('Senha atual incorreta');
     }
-
-    const newPasswordEncrypted = await this.encryptPassword(newPassword);
-    await UserRepository.findByIdAndUpdate(id, { password: newPasswordEncrypted });
+    else{
+      const newPasswordEncrypted = await this.encryptPassword(newPassword);
+      await UserRepository.findByIdAndUpdate(id, { password: newPasswordEncrypted });
+    }
   }
 
   static async updateUser(id, userData) {
