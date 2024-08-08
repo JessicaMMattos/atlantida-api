@@ -65,7 +65,7 @@ class UserController {
       const id = await TokenService.returnUserIdToToken(req.headers.authorization);
 
       await UsersService.updatePassword(id, req.body.password, req.body.newPassword);
-      res.status(200).send();
+      res.status(200).send({ message: 'success' });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
