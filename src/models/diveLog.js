@@ -36,7 +36,7 @@ const diveLogSchema = new Schema({
   difficulty: { type: Number, min: 1, max: 5 },
   notes: { type: String },
   photos: [{
-    data: Buffer,
+    data: String,
     contentType: String
   }],
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true }

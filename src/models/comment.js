@@ -6,7 +6,7 @@ const commentSchema = new Schema({
   rating: { type: Number, min: 0, max: 5, required: true },
   comment: { type: String },
   photos: [{
-    data: Buffer,
+    data: String,
     contentType: String
   }],
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true },
