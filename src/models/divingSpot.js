@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const divingSpotSchema = new Schema({
  name: { type: String, required: true },
  description: { type: String },
- image: { data: String, contentType: String },
+ image: { data: Buffer, contentType: String },
  location: {
   type: {
     type: String,
