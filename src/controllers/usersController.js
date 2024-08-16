@@ -21,6 +21,16 @@ class UserController {
     }
  };
 
+ static async findUserById(req, res) {
+  try {
+    const { userId } = req.params;
+    const user = await UsersService.findUserByToken(userId);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+ };
+
  static async findUserByEmail(req, res) {
     try {
       const user = await UsersService.findUserByEmail(req.body.email);

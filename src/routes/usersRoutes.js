@@ -7,6 +7,7 @@ const usersRoutes = express.Router();
 usersRoutes
   .get('/api/validateToken', bearer, UserController.validateToken)
   .post('/api/users/email', UserController.findUserByEmail)
+  .get('/api/users/:userId', UserController.findUserById)
   .post('/api/users/findUserByToken', bearer, UserController.findUserByToken)
   .post('/api/users', UserController.createUser)
   .post('/api/users/login', local, UserController.login)

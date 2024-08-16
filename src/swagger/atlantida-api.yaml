@@ -185,6 +185,26 @@ paths:
         '200':
           description: Token valido
 
+  /api/users/{id}:
+    get:
+      summary: Buscar usuário pelo id
+      description: Obtém os detalhes do usuário através do id.
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: O ID do usuário
+      responses:
+        '200':
+          description: Detalhes do usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/UserResponse'
+
   /api/users/email:
     post:
       summary: Encontrar usuário por e-mail
@@ -1240,6 +1260,7 @@ definitions:
     required:
     - name
     - location
+    - waterBody
     properties:
       name:
         type: string
@@ -1279,6 +1300,14 @@ definitions:
               format: float
             description: Coordenadas do ponto de mergulho (latitude, longitude).
             example: [-23.150, -44.250]
+      waterBody:
+        type: string
+        description: Tipo do corpo da água.
+        example: Salgada
+      visibility:
+        type: string
+        description: Visibilidade da biodiversidade marinha.
+        example: Alta
       averageRating:
         type: number
         description: Classificação média do ponto de mergulho.
@@ -1296,6 +1325,7 @@ definitions:
     required:
     - name
     - location
+    - waterBody
     properties:
       name:
         type: string
@@ -1335,6 +1365,10 @@ definitions:
               format: float
             description: Coordenadas do ponto de mergulho (latitude, longitude).
             example: [-23.150, -44.250]
+      waterBody:
+        type: string
+        description: Tipo do corpo da água.
+        example: Salgada
   Comment:
     type: object
     required:

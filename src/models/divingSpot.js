@@ -17,6 +17,8 @@ const divingSpotSchema = new Schema({
     required: true
   } 
  },
+ waterBody: { type: String, required: true },
+ visibility: { type: String },
  averageRating: { type: Number, min: 0, max: 5 },
  averageDifficulty: { type: Number, min: 0, max: 5 },
  numberOfComments: { type: Number, default: 0 },
