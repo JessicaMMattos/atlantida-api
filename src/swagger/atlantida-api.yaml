@@ -54,24 +54,6 @@ paths:
                 $ref: '#/definitions/Address'
 
   /api/addresses/{id}:
-    get:
-      summary: Obter endereço por ID
-      description: Obtém os detalhes de um endereço específico.
-      tags:
-        - addresses
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: O ID do endereço
-      responses:
-        '200':
-          description: Detalhes do endereço
-          content:
-            application/json:
-              schema:
-                $ref: '#/definitions/Address'
     put:
       summary: Atualizar endereço
       description: Atualiza os detalhes de um endereço.

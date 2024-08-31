@@ -2,7 +2,7 @@ import Address from '../models/address.js';
 
 class AddressRepository {
  static async findById(id) {
-    return await Address.findById(id);
+   return await Address.findById(id);
  }
 
  static async findAddressByUserId(userId) {
