@@ -89,11 +89,14 @@ class UsersService {
     const user = await UserRepository.findById(id);
     const passwordMatch = await bcryptjs.compare(currentPassword, user.password);
     if (!passwordMatch) {
+      logger.info('Error: Senha atual incorreta');
       throw new Error('Senha atual incorreta');
     }
-
-    const newPasswordEncrypted = await this.encryptPassword(newPassword);
-    await UserRepository.findByIdAndUpdate(id, { password: newPasswordEncrypted });
+    else{
+      logger.info('Success');
+      const newPasswordEncrypted = await this.encryptPassword(newPassword);
+      await UserRepository.findByIdAndUpdate(id, { password: newPasswordEncrypted });
+    }
   }
 
   static async updateUser(id, userData) {
