@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2024-09-01
+
+### Fixed
+- 'Photo.Data' format adjusted for string
+- Adjusting the request size limit
+
+### Added
+- Waterbody and Visibility added to divingSpot Model
+- findUserById
+- Libs:
+    - @babel/preset-env
+    - babel-jest
+
+### Removed
+- findAddressById
+
 ## [3.1.0] - 2024-07-23
 
 ### Added
