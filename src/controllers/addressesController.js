@@ -1,17 +1,17 @@
-// addressesController.js
 import AddressesService from '../services/addressesService.js';
 
 class AddressesController {
- static async findAddressById(req, res) {
-    try {
-      const foundAddress = await AddressesService.findAddressById(req.params.id);
-      if (!foundAddress) {
-        return res.status(400).send({ message: 'Endereço não encontrado' });
-      }
-      return res.status(200).json(foundAddress);
-    } catch (err) {
-      return res.status(500).send({ message: err.message });
+ static async findAdressByUserId(req, res) {
+  try {
+    const { userId } = req.params;
+    const addresses = await AddressesService.findAddressByUserId(userId);
+    if (addresses.length === 0) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
     }
+    res.status(200).json(addresses);
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
  }
 
  static async createAddress(req, res) {

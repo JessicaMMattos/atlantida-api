@@ -62,6 +62,20 @@ class DivingSpotService {
 
     return await DivingSpotRepository.updateById(divingSpotId, { averageDifficulty });
   }
+
+  static async updateVisibility(divingSpotId) {
+    logger.info('DivingSpotService.updateVisibility');
+    
+    const diveLogs = await DiveLogsRepository.findByDivingSpotId(divingSpotId);
+    
+    const validDiveLogs = diveLogs.filter(diveLog => diveLog.visibility !== undefined);
+
+    const visibility = validDiveLogs.length > 0 
+        ? validDiveLogs[validDiveLogs.length - 1].visibility 
+        : 'N/A';
+
+    return await DivingSpotRepository.updateById(divingSpotId, { visibility });
+  }
 }
 
 export default DivingSpotService;

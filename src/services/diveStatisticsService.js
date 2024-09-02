@@ -15,7 +15,7 @@ class DiveStatisticsService {
       const totalDives = diveLogs.length;
       const totalBottomTime = diveLogs.reduce((total, log) => total + log.bottomTimeInMinutes, 0);
       const totalDepth = diveLogs.reduce((total, log) => total + log.depth, 0);
-      const averageDepth = totalDepth / totalDives;
+      const averageDepth = (totalDepth / totalDives).toFixed(2);
 
       const waterBodyCounts = this.countConditions(diveLogs, 'waterBody');
       const weatherConditionCounts = this.countConditions(diveLogs, 'weatherConditions');

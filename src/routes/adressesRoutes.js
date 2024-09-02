@@ -4,7 +4,7 @@ import AddressController from '../controllers/addressesController.js';
 const adressesRoutes = express.Router();
 
 adressesRoutes
-  .get('/api/addresses/:id', AddressController.findAddressById)
+  .get('/addresses/user/:userId', AddressController.findAdressByUserId)
   .post('/api/addresses', AddressController.createAddress)
   .put('/api/addresses/:id', AddressController.updateAddress)
   .delete('/api/addresses/:id', AddressController.deleteAddress);

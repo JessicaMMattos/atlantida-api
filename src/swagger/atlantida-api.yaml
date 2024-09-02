@@ -54,24 +54,6 @@ paths:
                 $ref: '#/definitions/Address'
 
   /api/addresses/{id}:
-    get:
-      summary: Obter endereço por ID
-      description: Obtém os detalhes de um endereço específico.
-      tags:
-        - addresses
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: O ID do endereço
-      responses:
-        '200':
-          description: Detalhes do endereço
-          content:
-            application/json:
-              schema:
-                $ref: '#/definitions/Address'
     put:
       summary: Atualizar endereço
       description: Atualiza os detalhes de um endereço.
@@ -107,6 +89,26 @@ paths:
         '204':
           description: Endereço excluído com sucesso
 
+  /addresses/user/{userId}:
+    get:
+      summary: Busca endereços pelo ID do usuário
+      description: Obtém os detalhes de um endereço específico.
+      tags:
+        - addresses
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: O id do usuário
+      responses:
+        '200':
+          description: Detalhes do endereço
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Address'
+
   /api/users:
     post:
       summary: Criar novo usuário
@@ -125,7 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/User'
+                $ref: '#/definitions/UserResponse'
     put:
       summary: Atualizar usuário pelo token
       description: Atualiza os detalhes de um usuário.
@@ -138,7 +140,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/UserUpdate'
+              $ref: '#/definitions/UserResponse'
       responses:
         '200':
           description: Usuário atualizado com sucesso
@@ -164,6 +166,60 @@ paths:
       responses:
         '200':
           description: Token valido
+
+  /api/users/{id}:
+    get:
+      summary: Buscar usuário pelo id
+      description: Obtém os detalhes do usuário através do id.
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: O ID do usuário
+      responses:
+        '200':
+          description: Detalhes do usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/UserResponse'
+
+  /api/users/email:
+    post:
+      summary: Encontrar usuário por e-mail
+      description: Recupera informações do usuário com base no email fornecido.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: O email do usuário.
+      tags:
+        - users
+      responses:
+        '200':
+          description: Usuário existente
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/UserResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
 
   /api/users/login:
     post:
@@ -210,7 +266,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/User'
+                $ref: '#/definitions/UserResponse'
 
   /api/users/recoverPassword:
     post:
@@ -826,6 +882,7 @@ definitions:
       - street
       - number
       - postalCode
+      - userId
     properties:
       country:
         type: string
@@ -859,6 +916,10 @@ definitions:
         type: string
         description: O código postal do usuário.
         example: 01000-000
+      userId:
+        type: string
+        description: O ID do usuário.
+        example: 60d0fe4f5311236168a109ca
   User:
     type: object
     required:
@@ -867,7 +928,6 @@ definitions:
     - email
     - password
     - birthDate
-    - addressId
     properties:
       firstName:
         type: string
@@ -891,10 +951,42 @@ definitions:
         format: date
         description: A data de nascimento do usuário.
         example: 1990-01-01
-      addressId:
+  UserResponse:
+    type: object
+    required:
+    - _id
+    - firstName
+    - lastName
+    - email
+    - birthDate
+    - createdDate
+    properties:
+      _id:
         type: string
-        description: O ID do endereço do usuário.
+        description: id do usuário.
         example: 60d0fe4f5311236168a109ca
+      firstName:
+        type: string
+        description: O primeiro nome do usuário.
+        example: João
+      lastName:
+        type: string
+        description: O sobrenome do usuário.
+        example: Silva
+      email:
+        type: string
+        description: O email do usuário.
+        format: email
+        example: joao.silva@example.com
+      password:
+        type: string
+        description: A senha do usuário (armazenada com hash criptográfico).
+        example: f0rt3$$264
+      birthDate:
+        type: string
+        format: date
+        description: A data de nascimento do usuário.
+        example: 1990-01-01
   UserUpdate:
     type: object
     properties:
@@ -1150,6 +1242,7 @@ definitions:
     required:
     - name
     - location
+    - waterBody
     properties:
       name:
         type: string
@@ -1189,6 +1282,14 @@ definitions:
               format: float
             description: Coordenadas do ponto de mergulho (latitude, longitude).
             example: [-23.150, -44.250]
+      waterBody:
+        type: string
+        description: Tipo do corpo da água.
+        example: Salgada
+      visibility:
+        type: string
+        description: Visibilidade da biodiversidade marinha.
+        example: Alta
       averageRating:
         type: number
         description: Classificação média do ponto de mergulho.
@@ -1206,6 +1307,7 @@ definitions:
     required:
     - name
     - location
+    - waterBody
     properties:
       name:
         type: string
@@ -1245,6 +1347,10 @@ definitions:
               format: float
             description: Coordenadas do ponto de mergulho (latitude, longitude).
             example: [-23.150, -44.250]
+      waterBody:
+        type: string
+        description: Tipo do corpo da água.
+        example: Salgada
   Comment:
     type: object
     required:

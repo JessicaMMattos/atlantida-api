@@ -2,8 +2,12 @@ import Address from '../models/address.js';
 
 class AddressRepository {
  static async findById(id) {
-    return await Address.findById(id);
+   return await Address.findById(id);
  }
+
+ static async findAddressByUserId(userId) {
+   return await Address.find({ userId: userId });
+}
 
  static async create(data) {
     const address = new Address(data);

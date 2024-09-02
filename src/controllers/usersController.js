@@ -21,6 +21,26 @@ class UserController {
     }
  };
 
+ static async findUserById(req, res) {
+  try {
+    const { userId } = req.params;
+    const user = await UsersService.findUserByToken(userId);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+ };
+
+ static async findUserByEmail(req, res) {
+    try {
+      const user = await UsersService.findUserByEmail(req.body.email);
+      
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
   static async createUser(req, res) {
     try {
       const user = await UsersService.createUser(req.body);      
@@ -55,7 +75,7 @@ class UserController {
       const id = await TokenService.returnUserIdToToken(req.headers.authorization);
 
       await UsersService.updatePassword(id, req.body.password, req.body.newPassword);
-      res.status(200).send();
+      res.status(200).send({ message: 'success' });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

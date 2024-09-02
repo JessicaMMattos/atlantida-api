@@ -2,10 +2,10 @@ import AddressRepository from '../repositories/addressRepository.js';
 import logger from '../utils/logger.js';
 
 class AddressesService {
- static async findAddressById(id) {
-    logger.info('AddressesService.findAddressById');
-    return await AddressRepository.findById(id);
- }
+ static async findAddressByUserId(userId) {
+   logger.info('AddressesService.findAdressByUserId');
+   return await AddressRepository.findAddressByUserId(userId);
+}
 
  static async createAddress(addressData) {
     logger.info('AddressesService.createAddress');

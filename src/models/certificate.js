@@ -10,7 +10,7 @@ const certificateSchema = new Schema({
   certificationLevel: { type: String },
   issuanceDate: { type: Date, validate: validateIssuanceDate },
   expirationDate: { type: Date, validate: validateExpirationDate },
-  certificateImage: { data: Buffer, contentType: String },
+  certificateImage: { data: String, contentType: String },
   userId: { type: Schema.Types.ObjectId, ref: 'users', required: true }
 });
 

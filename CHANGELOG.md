@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2024-09-01
+
+### Fixed
+- 'Photo.Data' format adjusted for string
+- Adjusting the request size limit
+
+### Added
+- Waterbody and Visibility added to divingSpot Model
+- findUserById
+- Libs:
+    - @babel/preset-env
+    - babel-jest
+
+### Removed
+- findAddressById
+
+## [3.1.0] - 2024-07-23
+
+### Added
+- Route search user by email
+
+## [3.0.0] - 2024-07-07
+
+### Added
+- IdUser in the Address schema
+- Adresses routes:
+    - /addresses/user/:userId
+
+### Changed
+- Update libs:
+   - joi to v17.13.3,
+   - yaml to v2.4.5,
+   - nodemon to v3.1.4
+
+### Removed
+- User's idAddress
+
 ## [2.0.0] - 2024-06-02
 
 ### Added

@@ -51,6 +51,9 @@ class DiveLogsService {
     if (diveLog.difficulty) {
       await DivingSpotService.updateAverageDifficulty(newDiveLog.divingSpotId);
     }
+    if (diveLog.visibility) {
+      await DivingSpotService.updateVisibility(newDiveLog.divingSpotId);
+    }
     return newDiveLog;
   }
 
@@ -60,6 +63,9 @@ class DiveLogsService {
 
     if (update.difficulty) {
       await DivingSpotService.updateAverageDifficulty(foundDiveLog.divingSpotId);
+    }
+    if (update.visibility) {
+      await DivingSpotService.updateVisibility(foundDiveLog.divingSpotId);
     }
 
     return await DiveLogsRepository.updateById(id, update);
@@ -75,6 +81,7 @@ class DiveLogsService {
 
     const deletedDiveLog = await DiveLogsRepository.deleteById(id);
     await DivingSpotService.updateAverageDifficulty(deletedDiveLog.divingSpotId);
+    await DivingSpotService.updateVisibility(deletedDiveLog.divingSpotId);
 
     return deletedDiveLog;
   }
