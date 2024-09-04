@@ -6,7 +6,7 @@ class DiveLogsRepository {
  }
 
  static async findByUserId(userId) {
-    return await DiveLog.find({ userId });
+    return await DiveLog.find({ userId }).sort({ date: -1 });
  }
 
  static async findByDivingSpotId(divingSpotId) {
