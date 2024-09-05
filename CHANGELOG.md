@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.1] - 2024-09-04
+
+### Fixed
+- Adjust the ordering of findByUserId
+
 ## [4.0.0] - 2024-09-01
 
 ### Fixed
