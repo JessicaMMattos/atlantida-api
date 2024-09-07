@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.2] - 2024-09-07
+
+### Fixed
+- Changing total time statistics to average
+
 ## [4.0.1] - 2024-09-04
 
 ### Fixed

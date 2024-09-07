@@ -1221,9 +1221,9 @@ definitions:
         format: float
         description: Profundidade média dos mergulhos do usuário em metros.
         example: 30.0
-      totalBottomTime:
+      averageBottomTime:
         type: integer
-        description: Tempo total de permanência na água em minutos.
+        description: Tempo médio de permanência na água em minutos.
         example: 6750
       mostCommonWaterBody:
         type: string
