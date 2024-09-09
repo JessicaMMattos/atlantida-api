@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.3] - 2024-09-08
+
+### Fixed
+- Skipping tests
+
 ## [4.0.2] - 2024-09-07
 
 ### Fixed
