@@ -1,5 +1,7 @@
 import UsersService from '../services/usersService.js';
 import TokenService from '../services/tokenService.js';
+import DiveLogsService from '../services/diveLogsService.js';
+import AddressesService from '../services/addressesService.js';
 
 class UserController {
   static validateToken = async (_req, res) => {
@@ -94,14 +96,26 @@ class UserController {
 
   static async deleteUser(req, res) {
     try {
-      const id = await TokenService.returnUserIdToToken(req.headers.authorization);
+      const userId = await TokenService.returnUserIdToToken(req.headers.authorization);
 
-      await UsersService.deleteUser(id);
+      await UsersService.deleteUser(userId);
+      
+      const diveLogs = await DiveLogsService.findDiveLogsByUserId(userId);
+      for (const diveLog of diveLogs) {
+        await DiveLogsService.deleteDiveLog(diveLog._id);
+      }
+      
+      const addresses = await AddressesService.findAddressByUserId(userId);
+      for (const address of addresses) {
+        await AddressesService.deleteAddress(address._id);
+      }
+  
       res.status(204).json({ message: "Usuário deletado com sucesso" });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   };
+  
 }
 
 export default UserController;

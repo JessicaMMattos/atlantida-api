@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.4] - 2024-09-10
+
+### Fixed
+- Adjustment so that when deleting the user, the address and the user's dives are deleted
+
 ## [4.0.3] - 2024-09-08
 
 ### Fixed
