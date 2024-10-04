@@ -26,6 +26,7 @@ class DiveStatisticsService {
 
       return {
         totalDives,
+        totalBottomTime,
         averageBottomTime,
         averageDepth,
         mostCommonWaterBody,
