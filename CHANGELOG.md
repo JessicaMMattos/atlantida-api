@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.0] - 2024-10-04
+
+### Added
+- In statistics the total time submerged in the selected period
+
+### Removed
+- Validating the certificate expiration date
+
 ## [4.0.4] - 2024-09-10
 
 ### Fixed

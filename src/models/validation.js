@@ -25,11 +25,3 @@ export const validateIssuanceDate = {
   },
   message: () => 'Data de emissão inválida.',
 };
-
-export const validateExpirationDate = {
-  validator: (value) => {
-    const currentDate = new Date();
-    return value > currentDate;
-  },
-  message: () => 'Certificado vencido, não é possível inserir.',
-};
