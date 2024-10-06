@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.1] - 2024-10-06
+
+### Fixed
+- Adjustment so that when deleting the user, the user's certificates are also removed
+
 ## [4.1.0] - 2024-10-04
 
 ### Added

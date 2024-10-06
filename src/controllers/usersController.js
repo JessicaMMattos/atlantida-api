@@ -1,6 +1,7 @@
 import UsersService from '../services/usersService.js';
 import TokenService from '../services/tokenService.js';
 import DiveLogsService from '../services/diveLogsService.js';
+import CertificatesService from '../services/certificatesService.js';
 import AddressesService from '../services/addressesService.js';
 
 class UserController {
@@ -103,6 +104,11 @@ class UserController {
       const diveLogs = await DiveLogsService.findDiveLogsByUserId(userId);
       for (const diveLog of diveLogs) {
         await DiveLogsService.deleteDiveLog(diveLog._id);
+      }
+
+      const certificates = await CertificatesService.findCertificateByUserId(userId);
+      for (const certificate of certificates) {
+        await CertificatesService.deleteCertificate(certificate._id);
       }
       
       const addresses = await AddressesService.findAddressByUserId(userId);
