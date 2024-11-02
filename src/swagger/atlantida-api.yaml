@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Atlântida API
   description: API para o gerenciamento de mergulhos - Plataforma Atlântida.
-  version: 4.0.1
+  version: 4.1.0
 
 servers:
   - url: http://localhost:3000
@@ -1211,6 +1211,10 @@ definitions:
         type: integer
         description: Número total de mergulhos realizados pelo usuário.
         example: 150
+      totalBottomTime:
+        type: integer
+        description: Tempo total de permanência na água no período em minutos.
+        example: 6750
       totalDepth:
         type: number
         format: float
@@ -1221,9 +1225,9 @@ definitions:
         format: float
         description: Profundidade média dos mergulhos do usuário em metros.
         example: 30.0
-      totalBottomTime:
+      averageBottomTime:
         type: integer
-        description: Tempo total de permanência na água em minutos.
+        description: Tempo médio de permanência na água em minutos.
         example: 6750
       mostCommonWaterBody:
         type: string

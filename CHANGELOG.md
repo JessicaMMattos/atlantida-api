@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.1] - 2024-10-06
+
+### Fixed
+- Adjustment so that when deleting the user, the user's certificates are also removed
+
+## [4.1.0] - 2024-10-04
+
+### Added
+- In statistics the total time submerged in the selected period
+
+### Removed
+- Validating the certificate expiration date
+
+## [4.0.4] - 2024-09-10
+
+### Fixed
+- Adjustment so that when deleting the user, the address and the user's dives are deleted
+
+## [4.0.3] - 2024-09-08
+
+### Fixed
+- Skipping tests
+
+## [4.0.2] - 2024-09-07
+
+### Fixed
+- Changing total time statistics to average
+
 ## [4.0.1] - 2024-09-04
 
 ### Fixed
